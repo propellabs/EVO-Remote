@@ -139,7 +139,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 }
                 else
                 {
-                    connectTimeoutCount++
+                    connectTimeoutCount += 1
                 }
             }
             if ConnectionIssue == false
@@ -195,7 +195,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         IP.delegate = self
         TempControlView.hidden = true
         
-        var MainTimer = NSTimer.scheduledTimerWithTimeInterval(pingTime, target: self, selector: Selector("RunAllHTTPGetAPICalls"), userInfo: nil, repeats: true)
+        NSTimer.scheduledTimerWithTimeInterval(pingTime, target: self, selector: #selector(ViewController.RunAllHTTPGetAPICalls), userInfo: nil, repeats: true)
         
         dispatch_async(dispatch_get_main_queue()) {
             self.theCollection.hidden = true
@@ -230,7 +230,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) 
         let ID = cell.viewWithTag(9898) as! UILabel
-        index++
+        index += 1
         
         var theArr = ArrayRealPlate
         
@@ -337,7 +337,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.timeOfDayDoneOut.hidden = true
                 self.labelTimeofDay.hidden = true
             }
-            clockIndex++
+            clockIndex += 1
         }
         else if clockIndex == 1
         {
@@ -350,7 +350,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.timeOfDayDoneOut.hidden = true
                 self.labelTimeofDay.hidden = true
             }
-            clockIndex++
+            clockIndex += 1
         }
         else if clockIndex == 2
         {
@@ -363,7 +363,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.timeOfDayDoneOut.hidden = true
                 self.labelTimeofDay.hidden = true
             }
-            clockIndex++
+            clockIndex += 1
         }
         else if clockIndex == 3
         {
@@ -376,7 +376,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.timeOfDayDoneOut.hidden = false
                 self.labelTimeofDay.hidden = false
             }
-            clockIndex++
+            clockIndex += 1
         }
         if clockIndex == 4
         {
@@ -458,11 +458,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("responseString = \(responseString)")
             
-            var err: NSError?
-            var myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+//            var err: NSError?
+//            var myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
             }
-            catch
-            {}
+//            catch
+//            {}
         }
         task.resume()
     }
@@ -471,21 +471,25 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     func StopProcess(processID:String)
     {
         
-        var urlToMod = "http://" + IPAdd + ":9001/api/processstop/"
+        let urlToMod = "http://" + IPAdd + ":9001/api/processstop/"
         
-        var myUrl = NSURL(string: urlToMod);
+        let myUrl = NSURL(string: urlToMod);
         
         let request = NSMutableURLRequest(URL:myUrl!);
         request.HTTPMethod = "POST";
         
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
 
-        var thingTosay = ProcessArg(ProcessId: processID, Options: "")
-        let postString = thingTosay.toJsonString()
+        let processArgs = ProcessArg(ProcessId: processID, Options: "")
+        let postString = processArgs.toJsonString()
         
         request.HTTPBody = postString!.dataUsingEncoding(NSUTF8StringEncoding);
         
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+            
+            
+            
+            
             data, response, error in
             do
             {
@@ -500,12 +504,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             print("responseString = \(responseString)")
             
-            var err: NSError?
-            var myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-          
+//            var err: NSError?
+//            var myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+//          
             
-        }catch
-        {}
+        }
+//            catch
+//        {}
         }
         task.resume()
     }
@@ -659,9 +664,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             self.ArrayRealPlate.removeAll(keepCapacity: false)
             
             // Print out response body
-            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+          //  let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             
-            var err: NSError?
+          //  var err: NSError?
             let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
             
             let json = JSON(myJSON!)
@@ -669,16 +674,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             if let details = json["Status"]["Details"].string{
                 
                 let rawJSONData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)!
-                var error: NSError?
+             //   var error: NSError?
                 if let JSONResponseDictionary = try NSJSONSerialization.JSONObjectWithData(rawJSONData, options: .MutableLeaves) as? NSDictionary
                 {
                     self.rows = 8
                     self.Colum = 12
                     self.ArrayRealPlate.removeAll(keepCapacity: false)
                     
-                    for var i = 0; i < self.rows; i++
+                    for i in 0 ..< self.rows
                     {
-                        for var j = 0; j < self.Colum; j++
+                        for j in 0 ..< self.Colum
                         {
                             let lab = self.A2Z[i] + String((j + 1))
                             self.ArrayRealPlate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
@@ -719,9 +724,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                     }
                                 }
                                 self.ArrayRealPlate.removeAll(keepCapacity: false)
-                                for var i = 0; i < self.rows; i++
+                                for i in 0 ..< self.rows
                                 {
-                                    for var j = 0; j < self.Colum; j++
+                                    for j in 0 ..< self.Colum
                                     {
                                         let lab = self.A2Z[i] + String((j + 1))
                                         self.ArrayRealPlate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
@@ -782,9 +787,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             self.ArrayRealPlate.removeAll(keepCapacity: false)
             
             // Print out response body
-            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+           // let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
             
-            var err: NSError?
+          //  var err: NSError?
             let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
             
             let json = JSON(myJSON!)
@@ -792,15 +797,15 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             if let details = json["Status"]["Details"].string{
                 
                 let rawJSONData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)!
-                var error: NSError?
+            //    var error: NSError?
                 if let jsonResponseDictionary = try NSJSONSerialization.JSONObjectWithData(rawJSONData, options: .MutableLeaves) as? NSDictionary
                 {
 
                 self.ArrayRealPlate.removeAll(keepCapacity: false)
                     
-                for var i = 0; i < self.rows; i++
+                for i in 0 ..< self.rows
                 {
-                    for var j = 0; j < self.Colum; j++
+                    for j in 0 ..< self.Colum
                     {
                         let lab = self.A2Z[i] + String((j + 1))
                         self.ArrayRealPlate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
@@ -910,10 +915,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             let thingtogo = (min as NSString).doubleValue
                             
                             let date = NSDate()
-                            let calendar = NSCalendar.currentCalendar()
-                            let components = calendar.components([.Hour, .Minute], fromDate: date)
-                            let hour = components.hour
-                            let minutes = components.minute
+                           // let calendar = NSCalendar.currentCalendar()
+                           // let components = calendar.components([.Hour, .Minute], fromDate: date)
+                           // let hour = components.hour
+                           // let minutes = components.minute
                             
                             let formatters = NSDateFormatter()
                             formatters.locale = NSLocale(localeIdentifier: "en_US")
@@ -1148,7 +1153,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             }
             
             
-            var err: NSError?
+          //  var err: NSError?
             let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
    
             let json = JSON(myJSON!)
@@ -1160,7 +1165,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
 
                 if let ttttttt: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
                 {
-                    var error: NSError?
+                 //   var error: NSError?
                     
                     
                     
@@ -1429,7 +1434,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 return
             }
             
-            var err: NSError?
+         //   var err: NSError?
             
             
            
@@ -1440,35 +1445,35 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             
             if let details = json["Status"]["Details"].string{
                 
-                if let ttttttt: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
+                if let statusDetails: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
                 {
-                    var error: NSError?
+                 //   var error: NSError?
                     
-                    if let ddddddd = try NSJSONSerialization.JSONObjectWithData(ttttttt, options: []) as? NSDictionary
+                    if let detailsDictionary = try NSJSONSerialization.JSONObjectWithData(statusDetails, options: []) as? NSDictionary
                     {
-                        var w1: Float = 0.0;
-                        var w2: Float = 0.0;
+//                        var w1: Float = 0.0;
+//                        var w2: Float = 0.0;
                         var d1: Float = 0.0;
                         var d2: Float = 0.0;
                         
                         
-                        if let Wast_1  = ddddddd.valueForKey("WastARatio") as? Float
-                        {
-                            w1 = Wast_1
-                        }
-                        if let Wast_2 =  ddddddd.valueForKey("WastBRatio") as? Float
-                        {
-                            w2 = Wast_2
-                        }
-                        if let DI_1 = ddddddd.valueForKey("DIARatio") as? Float
+//                        if let Wast_1  = detailsDictionary.valueForKey("WastARatio") as? Float
+//                        {
+//                            w1 = Wast_1
+//                        }
+//                        if let Wast_2 =  detailsDictionary.valueForKey("WastBRatio") as? Float
+//                        {
+//                            w2 = Wast_2
+//                        }
+                        if let DI_1 = detailsDictionary.valueForKey("DIARatio") as? Float
                         {
                             d1 = DI_1
                         }
-                        if  let DI_2 = ddddddd.valueForKey("DIBRatio") as? Float
+                        if  let DI_2 = detailsDictionary.valueForKey("DIBRatio") as? Float
                         {
                             d2 = DI_2
                         }
-                        if let timeLeft = ddddddd.valueForKey("TimeRemainingSeconds") as? Double
+                        if let timeLeft = detailsDictionary.valueForKey("TimeRemainingSeconds") as? Double
                         {
                             
                             let timeLeft4 = timeLeft / 60.0
@@ -1491,7 +1496,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                 }
                             }
                         }
-                        let realWast = (w1 + w2) / 2.0
+                       // let realWast = (w1 + w2) / 2.0
                         let realDI = (d1 + d2) / 2.0
                         
                         dispatch_async(dispatch_get_main_queue()) {
@@ -1518,32 +1523,32 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     @IBAction func findIP(sender: AnyObject) {
         
         
-        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-        dispatch_async(dispatch_get_global_queue(priority, 0)) {
-            var indexme = 0
-            var runing = true
-            
-            while runing
-            {
-                if self.ConnectionIssue == false
-                {
-                    runing = false
-                    break
-                }
-                
-                if indexme > 30
-                {
-                    break
-                }
-                
-                self.IPAdd = "10.0.1." + String(indexme)
-                
-                indexme++
-                
-                sleep(1)
-            }
-            
-        }
+//        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+//        dispatch_async(dispatch_get_global_queue(priority, 0)) {
+//            var indexme = 0
+//            var runing = true
+//            
+//            while runing
+//            {
+//                if self.ConnectionIssue == false
+//                {
+//                    runing = false
+//                    break
+//                }
+//                
+//                if indexme > 30
+//                {
+//                    break
+//                }
+//                
+//                self.IPAdd = "10.0.1." + String(indexme)
+//                
+//                indexme += 1
+//                
+//                sleep(1)
+//            }
+//            
+//        }
         
         
     }
@@ -1568,8 +1573,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             
             do
             {
-                
-            
             if error != nil
             {
                 //   println("error=\(error)")
@@ -1578,14 +1581,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 return
             }
             
-            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            var err: NSError?
-            let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-            
-            let json = JSON(myJSON!)
+             // let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+             //  var err: NSError?
+             // let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+            // let json = JSON(myJSON!)
+                
             }
-            catch
-            {}
+//            catch
+//            {}
         }
         task.resume()
     }
