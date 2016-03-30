@@ -7,12 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		000D2FFD1B2E8CCD00B04B04 /* PlateItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D2FFC1B2E8CCD00B04B04 /* PlateItemModel.swift */; };
+		000E36A61B3148E9008BDF98 /* NotInUse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000E36A51B3148E9008BDF98 /* NotInUse.swift */; };
+		00113F821B2B973000A4D601 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00113F811B2B973000A4D601 /* SwiftyJSON.swift */; };
+		0011DBA01B2B7B390004CEC2 /* ProccessArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0011DB9F1B2B7B390004CEC2 /* ProccessArgs.swift */; };
+		0011DBA61B2B83500004CEC2 /* Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0011DBA51B2B83500004CEC2 /* Serializable.swift */; };
 		002721681B13AE2F00DFC0EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002721671B13AE2F00DFC0EA /* AppDelegate.swift */; };
 		0027216A1B13AE2F00DFC0EA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002721691B13AE2F00DFC0EA /* ViewController.swift */; };
 		0027216D1B13AE2F00DFC0EA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0027216B1B13AE2F00DFC0EA /* Main.storyboard */; };
 		0027216F1B13AE2F00DFC0EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0027216E1B13AE2F00DFC0EA /* Images.xcassets */; };
 		002721721B13AE2F00DFC0EA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 002721701B13AE2F00DFC0EA /* LaunchScreen.xib */; };
-		0027217E1B13AE2F00DFC0EA /* EVORemote_0_01Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0027217D1B13AE2F00DFC0EA /* EVORemote_0_01Tests.swift */; };
+		00961B1A1B54CB2D00B1B5F0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00961B191B54CB2D00B1B5F0 /* CoreData.framework */; };
+		00961B4E1B54CC2100B1B5F0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00961B4C1B54CC2100B1B5F0 /* Model.xcdatamodeld */; };
+		00AC29CD1B64228B001CFC17 /* THEIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AC29CC1B64228B001CFC17 /* THEIP.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,16 +33,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		002721621B13AE2F00DFC0EA /* EVORemote_0.01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVORemote_0.01.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000D2FFC1B2E8CCD00B04B04 /* PlateItemModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlateItemModel.swift; sourceTree = "<group>"; };
+		000E36A51B3148E9008BDF98 /* NotInUse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotInUse.swift; sourceTree = "<group>"; };
+		00113F811B2B973000A4D601 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
+		0011DB9F1B2B7B390004CEC2 /* ProccessArgs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProccessArgs.swift; sourceTree = "<group>"; };
+		0011DBA51B2B83500004CEC2 /* Serializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializable.swift; sourceTree = "<group>"; };
+		002721621B13AE2F00DFC0EA /* EVO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		002721661B13AE2F00DFC0EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		002721671B13AE2F00DFC0EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		002721691B13AE2F00DFC0EA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		0027216C1B13AE2F00DFC0EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0027216E1B13AE2F00DFC0EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		002721711B13AE2F00DFC0EA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		002721771B13AE2F00DFC0EA /* EVORemote_0.01Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EVORemote_0.01Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0027217C1B13AE2F00DFC0EA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0027217D1B13AE2F00DFC0EA /* EVORemote_0_01Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EVORemote_0_01Tests.swift; sourceTree = "<group>"; };
+		002721771B13AE2F00DFC0EA /* EVOTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EVOTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00961B191B54CB2D00B1B5F0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		00961B4D1B54CC2100B1B5F0 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		00AC29CC1B64228B001CFC17 /* THEIP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = THEIP.swift; path = EVO.xcodeproj/../THEIP.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00961B1A1B54CB2D00B1B5F0 /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,8 +73,8 @@
 		002721591B13AE2F00DFC0EA = {
 			isa = PBXGroup;
 			children = (
-				002721641B13AE2F00DFC0EA /* EVORemote_0.01 */,
-				0027217A1B13AE2F00DFC0EA /* EVORemote_0.01Tests */,
+				00961B191B54CB2D00B1B5F0 /* CoreData.framework */,
+				002721641B13AE2F00DFC0EA /* EVO */,
 				002721631B13AE2F00DFC0EA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,22 +82,30 @@
 		002721631B13AE2F00DFC0EA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				002721621B13AE2F00DFC0EA /* EVORemote_0.01.app */,
-				002721771B13AE2F00DFC0EA /* EVORemote_0.01Tests.xctest */,
+				002721621B13AE2F00DFC0EA /* EVO.app */,
+				002721771B13AE2F00DFC0EA /* EVOTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		002721641B13AE2F00DFC0EA /* EVORemote_0.01 */ = {
+		002721641B13AE2F00DFC0EA /* EVO */ = {
 			isa = PBXGroup;
 			children = (
+				00AC29CC1B64228B001CFC17 /* THEIP.swift */,
+				000D2FFC1B2E8CCD00B04B04 /* PlateItemModel.swift */,
 				002721671B13AE2F00DFC0EA /* AppDelegate.swift */,
 				002721691B13AE2F00DFC0EA /* ViewController.swift */,
 				0027216B1B13AE2F00DFC0EA /* Main.storyboard */,
+				0011DBA51B2B83500004CEC2 /* Serializable.swift */,
 				0027216E1B13AE2F00DFC0EA /* Images.xcassets */,
 				002721701B13AE2F00DFC0EA /* LaunchScreen.xib */,
 				002721651B13AE2F00DFC0EA /* Supporting Files */,
+				0011DB9F1B2B7B390004CEC2 /* ProccessArgs.swift */,
+				00113F811B2B973000A4D601 /* SwiftyJSON.swift */,
+				000E36A51B3148E9008BDF98 /* NotInUse.swift */,
+				00961B4C1B54CC2100B1B5F0 /* Model.xcdatamodeld */,
 			);
+			name = EVO;
 			path = EVORemote_0.01;
 			sourceTree = "<group>";
 		};
@@ -95,29 +117,12 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		0027217A1B13AE2F00DFC0EA /* EVORemote_0.01Tests */ = {
-			isa = PBXGroup;
-			children = (
-				0027217D1B13AE2F00DFC0EA /* EVORemote_0_01Tests.swift */,
-				0027217B1B13AE2F00DFC0EA /* Supporting Files */,
-			);
-			path = EVORemote_0.01Tests;
-			sourceTree = "<group>";
-		};
-		0027217B1B13AE2F00DFC0EA /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				0027217C1B13AE2F00DFC0EA /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		002721611B13AE2F00DFC0EA /* EVORemote_0.01 */ = {
+		002721611B13AE2F00DFC0EA /* EVO */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 002721811B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVORemote_0.01" */;
+			buildConfigurationList = 002721811B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVO" */;
 			buildPhases = (
 				0027215E1B13AE2F00DFC0EA /* Sources */,
 				0027215F1B13AE2F00DFC0EA /* Frameworks */,
@@ -127,14 +132,14 @@
 			);
 			dependencies = (
 			);
-			name = EVORemote_0.01;
+			name = EVO;
 			productName = EVORemote_0.01;
-			productReference = 002721621B13AE2F00DFC0EA /* EVORemote_0.01.app */;
+			productReference = 002721621B13AE2F00DFC0EA /* EVO.app */;
 			productType = "com.apple.product-type.application";
 		};
-		002721761B13AE2F00DFC0EA /* EVORemote_0.01Tests */ = {
+		002721761B13AE2F00DFC0EA /* EVOTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 002721841B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVORemote_0.01Tests" */;
+			buildConfigurationList = 002721841B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVOTests" */;
 			buildPhases = (
 				002721731B13AE2F00DFC0EA /* Sources */,
 				002721741B13AE2F00DFC0EA /* Frameworks */,
@@ -145,9 +150,9 @@
 			dependencies = (
 				002721791B13AE2F00DFC0EA /* PBXTargetDependency */,
 			);
-			name = EVORemote_0.01Tests;
+			name = EVOTests;
 			productName = EVORemote_0.01Tests;
-			productReference = 002721771B13AE2F00DFC0EA /* EVORemote_0.01Tests.xctest */;
+			productReference = 002721771B13AE2F00DFC0EA /* EVOTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -156,11 +161,14 @@
 		0027215A1B13AE2F00DFC0EA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0710;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = com.RMTEK;
 				TargetAttributes = {
 					002721611B13AE2F00DFC0EA = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = 8AW6J4ZTPE;
 					};
 					002721761B13AE2F00DFC0EA = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -168,7 +176,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0027215D1B13AE2F00DFC0EA /* Build configuration list for PBXProject "EVORemote_0.01" */;
+			buildConfigurationList = 0027215D1B13AE2F00DFC0EA /* Build configuration list for PBXProject "EVO" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -181,8 +189,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				002721611B13AE2F00DFC0EA /* EVORemote_0.01 */,
-				002721761B13AE2F00DFC0EA /* EVORemote_0.01Tests */,
+				002721611B13AE2F00DFC0EA /* EVO */,
+				002721761B13AE2F00DFC0EA /* EVOTests */,
 			);
 		};
 /* End PBXProject section */
@@ -212,7 +220,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				000E36A61B3148E9008BDF98 /* NotInUse.swift in Sources */,
+				00AC29CD1B64228B001CFC17 /* THEIP.swift in Sources */,
+				0011DBA61B2B83500004CEC2 /* Serializable.swift in Sources */,
+				0011DBA01B2B7B390004CEC2 /* ProccessArgs.swift in Sources */,
+				00961B4E1B54CC2100B1B5F0 /* Model.xcdatamodeld in Sources */,
 				0027216A1B13AE2F00DFC0EA /* ViewController.swift in Sources */,
+				000D2FFD1B2E8CCD00B04B04 /* PlateItemModel.swift in Sources */,
+				00113F821B2B973000A4D601 /* SwiftyJSON.swift in Sources */,
 				002721681B13AE2F00DFC0EA /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -221,7 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0027217E1B13AE2F00DFC0EA /* EVORemote_0_01Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,7 +244,7 @@
 /* Begin PBXTargetDependency section */
 		002721791B13AE2F00DFC0EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 002721611B13AE2F00DFC0EA /* EVORemote_0.01 */;
+			target = 002721611B13AE2F00DFC0EA /* EVO */;
 			targetProxy = 002721781B13AE2F00DFC0EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -342,9 +356,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = EVORemote_0.01/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Propel.Labs.EVO.GO;
+				PRODUCT_NAME = EVO;
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -352,9 +372,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = EVORemote_0.01/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.Propel.Labs.EVO.GO;
+				PRODUCT_NAME = EVO;
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
@@ -372,7 +398,7 @@
 				);
 				INFOPLIST_FILE = EVORemote_0.01Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = EVOTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EVORemote_0.01.app/EVORemote_0.01";
 			};
 			name = Debug;
@@ -387,7 +413,7 @@
 				);
 				INFOPLIST_FILE = EVORemote_0.01Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = EVOTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EVORemote_0.01.app/EVORemote_0.01";
 			};
 			name = Release;
@@ -395,7 +421,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0027215D1B13AE2F00DFC0EA /* Build configuration list for PBXProject "EVORemote_0.01" */ = {
+		0027215D1B13AE2F00DFC0EA /* Build configuration list for PBXProject "EVO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0027217F1B13AE2F00DFC0EA /* Debug */,
@@ -404,23 +430,38 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		002721811B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVORemote_0.01" */ = {
+		002721811B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVO" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				002721821B13AE2F00DFC0EA /* Debug */,
 				002721831B13AE2F00DFC0EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
-		002721841B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVORemote_0.01Tests" */ = {
+		002721841B13AE2F00DFC0EA /* Build configuration list for PBXNativeTarget "EVOTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				002721851B13AE2F00DFC0EA /* Debug */,
 				002721861B13AE2F00DFC0EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		00961B4C1B54CC2100B1B5F0 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				00961B4D1B54CC2100B1B5F0 /* Model.xcdatamodel */,
+			);
+			currentVersion = 00961B4D1B54CC2100B1B5F0 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 0027215A1B13AE2F00DFC0EA /* Project object */;
 }

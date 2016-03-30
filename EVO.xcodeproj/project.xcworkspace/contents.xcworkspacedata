@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:EVORemote_0.01.xcodeproj">
+      location = "self:/Users/Reed/Desktop/EVORemote_0.01/EVO.xcodeproj">
    </FileRef>
 </Workspace>
