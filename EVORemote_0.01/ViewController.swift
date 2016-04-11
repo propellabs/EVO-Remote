@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  EVORemote_0.01
+//  EVORemote_0.02
 //
 //  Created by Reed Miller on 5/25/15.
 //  Copyright (c) 2015 com.RMTEK. All rights reserved.
@@ -16,9 +16,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     var Array = [PlateItemModel]()
     var isHotorCold = false
     var watchForTempChange = false
-    var pingTime: Double = 1.0;
+    var pingTime: Double = 2;
     var index = 0.0;
-    var ArrayRealPlate = [PlateItemModel]()
+    var Plate = [PlateItemModel]()
     var rows = 8
     var Colum = 12
     var CurrentName = ""
@@ -26,6 +26,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     var A2Z: [String] = [ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" ]
     var lastwellID = ""
     var lastWellStatus = 0
+    let httpsting = "http://"
+    let port = ":9001"
+    let apiPath = "/api/processstatus/"
+    var httpAPIPath = ""
+    var EVONetworkCommunicationController = NetworkCommunicationController(IP: "");
+    let AvailableProcessIds =  ProcessIds()
+    var newRunlistRequired = true;
+    var plateName = "";
+    
+    
     
     @IBOutlet var QCButton: UIButton!
     @IBOutlet var labelTimeofDay: UILabel!
@@ -48,11 +58,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     @IBOutlet var CoolDownButton: UIButton!
     @IBOutlet var FireImage: UIImageView!
     @IBOutlet var PlateView: UIView!
-    @IBOutlet var ButtBar: UIView!
     @IBOutlet var ConnectionIssueImage: UIImageView!
     @IBOutlet var PowerOnImage: UIImageView!
     @IBOutlet var TempControlView: UIView!
     @IBOutlet var Users: UILabel!
+    @IBOutlet var QuickActionBar: UIView!
+    @IBOutlet var LightButton: UIButton!
+    @IBOutlet var DoorButton: UIButton!
+    @IBOutlet var Light: UIButton!
     @IBOutlet var IP: UITextField!
     @IBOutlet var dataout1: UITextView!
     @IBOutlet var ProgressBar: UIProgressView!
@@ -65,6 +78,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     @IBOutlet var StartUpButton: UIButton!
     @IBOutlet var ShutDownButton: UIButton!
     @IBOutlet var StatTubeView: UIView!
+    @IBOutlet var DetailsButt: UIButton!
+    @IBOutlet var StopTempButt: UIButton!
     
     var isTempOn: Bool = false{
         willSet
@@ -128,8 +143,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         self.NameOut.text = ""
                         self.Users.text = ""
                         self.DI1.progress = 0.0
-                       // self.wast1.progress = 0.0
-                        self.ButtBar.hidden = true
+                        self.QuickActionBar.hidden = true
                         self.QCButton.hidden = true
                         self.TempControlView.hidden = true
                         self.PlateView.hidden = true
@@ -149,7 +163,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                     self.ConnectionIssueImage.hidden = true
                     self.PowerOnImage.hidden = false
                     self.dataout1.text = ""
-                    self.ButtBar.hidden = false
+                    self.QuickActionBar.hidden = false
                     self.QCButton.hidden = false
                     self.PlateView.hidden = false
                 }
@@ -172,10 +186,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         {
             IPAdd = results[results.count - 1].ip
             IP.text = IPAdd;
+            EVONetworkCommunicationController = NetworkCommunicationController(IP: IPAdd);
+            httpAPIPath = httpsting + IPAdd + port + apiPath
         }
         else
         {
-            // IPAdd = "10.0.1.15"
         }
         
         UIApplication.sharedApplication().idleTimerDisabled = true
@@ -183,14 +198,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         DetailsView.hidden = true
 
         let diceRoll = Int(arc4random_uniform(7))
-        let newthing = PlateItemModel(Lable: String(diceRoll), Name: String(diceRoll), Status: diceRoll)
+        let placeHolder = PlateItemModel(Lable: String(diceRoll), Name: String(diceRoll), Status: diceRoll)
         for index in 1...97{
-            newthing.Lable = String(index)
-            ArrayRealPlate.append(newthing)
+            placeHolder.Lable = String(index)
+            Plate.append(placeHolder)
         }
         
         ConnectionIssueImage.hidden = true
-      //  wast1.transform = CGAffineTransformMakeRotation(CGFloat(M_PI + M_PI_2))
         DI1.transform = CGAffineTransformMakeRotation(CGFloat(M_PI + M_PI_2))
         IP.delegate = self
         TempControlView.hidden = true
@@ -198,16 +212,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         NSTimer.scheduledTimerWithTimeInterval(pingTime, target: self, selector: #selector(ViewController.RunAllHTTPGetAPICalls), userInfo: nil, repeats: true)
         
         dispatch_async(dispatch_get_main_queue()) {
-            self.theCollection.hidden = true
+            self.SamplePlateUICollection.hidden = true
             self.PercentDone.hidden = true
             self.TimeLeft.hidden = true
             self.TimeRemaining.hidden = false
             self.coolImage.hidden = true
             self.FireImage.hidden = true
-            
-      //self.StatTubeView.hidden = false;
-                self.StatTubeView.hidden = true;
-            
+            self.StatTubeView.hidden = true;
         }
     }
     
@@ -225,38 +236,36 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     }
     
     
-    @IBOutlet var theCollection: UICollectionView!
+    @IBOutlet var SamplePlateUICollection: UICollectionView!
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) 
         let ID = cell.viewWithTag(9898) as! UILabel
         index += 1
         
-        var theArr = ArrayRealPlate
+        var plate = Plate
         
-        if !theArr.isEmpty
+        if !plate.isEmpty
     
         {
-            let thingggg = indexPath.row + Colum * indexPath.section
+            let wellIndex = indexPath.row + Colum * indexPath.section
             
-            ID.text = theArr[thingggg].Lable
+            ID.text = plate[wellIndex].Lable
             
             cell.layer.cornerRadius = cell.frame.size.width/2
             cell.clipsToBounds = true
 
             
-             if theArr[indexPath.row + Colum * indexPath.section].Status == 1
+             if plate[indexPath.row + Colum * indexPath.section].Status == 1
             {
                 cell.layer.backgroundColor = UIColor.grayColor().CGColor
             }
-            else if theArr[indexPath.row + Colum * indexPath.section].Status == 2
+            else if plate[indexPath.row + Colum * indexPath.section].Status == 2
             {
                 cell.layer.backgroundColor = UIColor.orangeColor().CGColor
                 
-                self.CurrentName = theArr[indexPath.row + Colum * indexPath.section].Name
-                
-                
-                self.CurrentWell = theArr[indexPath.row + Colum * indexPath.section].Lable
+                self.CurrentName = plate[indexPath.row + Colum * indexPath.section].Name
+                self.CurrentWell = plate[indexPath.row + Colum * indexPath.section].Lable
                 
                 dispatch_async(dispatch_get_main_queue()) {
                     if self.StatTubeView.hidden == true
@@ -266,7 +275,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                     }
                 }
             }
-            else if theArr[indexPath.row + Colum * indexPath.section].Status == 3
+            else if plate[indexPath.row + Colum * indexPath.section].Status == 3
             {
                 cell.layer.backgroundColor =  UIColor(red: 0.0, green: 0.4, blue: 0.0, alpha: 1).CGColor
             }
@@ -275,14 +284,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                  cell.layer.backgroundColor = UIColor.grayColor().CGColor
             }
             
-            
-            
-            if theArr[indexPath.row + Colum * indexPath.section].HitTest > 0.15
+            if plate[indexPath.row + Colum * indexPath.section].HitTest > 0.15
             {
                 cell.layer.backgroundColor = UIColor.greenColor().CGColor
             }
-            
-            
        
         }
         return cell
@@ -385,9 +390,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         
         
     }
-    @IBOutlet var DetailsButt: UIButton!
-    @IBOutlet var StopTempButt: UIButton!
-    
+
     @IBAction func StopTempButt(sender: AnyObject) {
 
         StopTempButt.transform = CGAffineTransformMakeScale(0.01, 0.01)
@@ -401,7 +404,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.StopTempButt.transform = CGAffineTransformIdentity
             }, completion: nil)
 
-        self.StopProcess("kcv8Nak7jEuKEJXpY32UCQ")
+        self.EVONetworkCommunicationController.StopProcess(AvailableProcessIds.Temperature)
         
     }
     
@@ -412,107 +415,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     func APICallTempToCold()
     {
-        ProcessStartOptions("kcv8Nak7jEuKEJXpY32UCQ", options: "4")
+       EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.Temperature, options: "4")
         watchForTempChange = false
     }
     
     func APICallTempToHot()
     {
-        ProcessStartOptions("kcv8Nak7jEuKEJXpY32UCQ", options: "37")
+        EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.Temperature, options: "37")
         watchForTempChange = false
-    }
-    
-    
-    func ProcessStartOptions(processId:String, options:String )
-    {
-        let urlToMod = "http://" + IPAdd + ":9001/api/processstart/"
-        
-        let myUrl = NSURL(string: urlToMod);
-        
-        let request = NSMutableURLRequest(URL:myUrl!);
-        request.HTTPMethod = "POST";
-        
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        
-        
-        let thingTosay = ProcessArg(ProcessId: processId, Options: options)
-        
-        let postString = thingTosay.toJsonString()
-        
-        request.HTTPBody = postString!.dataUsingEncoding(NSUTF8StringEncoding);
-        
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
-            data, response, error in
-            
-            do
-            {
-            
-            if error != nil
-            {
-                //  println("error=\(error)")
-                self.HTTPErrorText = "error=\(error)"
-                self.setVal()
-                return
-            }
-            
-            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("responseString = \(responseString)")
-            
-//            var err: NSError?
-//            var myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-            }
-//            catch
-//            {}
-        }
-        task.resume()
-    }
-    
-    
-    func StopProcess(processID:String)
-    {
-        
-        let urlToMod = "http://" + IPAdd + ":9001/api/processstop/"
-        
-        let myUrl = NSURL(string: urlToMod);
-        
-        let request = NSMutableURLRequest(URL:myUrl!);
-        request.HTTPMethod = "POST";
-        
-        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-
-        let processArgs = ProcessArg(ProcessId: processID, Options: "")
-        let postString = processArgs.toJsonString()
-        
-        request.HTTPBody = postString!.dataUsingEncoding(NSUTF8StringEncoding);
-        
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
-            
-            
-            
-            
-            data, response, error in
-            do
-            {
-            
-            if error != nil
-            {
-                self.HTTPErrorText = "error=\(error)"
-                self.setVal()
-                return
-            }
-            
-            let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            print("responseString = \(responseString)")
-            
-//            var err: NSError?
-//            var myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-//          
-            
-        }
-//            catch
-//        {}
-        }
-        task.resume()
     }
     
     
@@ -533,7 +443,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         if self.isTempOn == true {
             watchForTempChange = true
             isHotorCold = true
-            self.StopProcess("kcv8Nak7jEuKEJXpY32UCQ")
+            self.EVONetworkCommunicationController.StopProcess(AvailableProcessIds.Temperature)
         }
         else
         {
@@ -558,7 +468,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         if self.isTempOn == true {
             watchForTempChange = true
             isHotorCold = false
-            self.StopProcess("kcv8Nak7jEuKEJXpY32UCQ")
+            self.EVONetworkCommunicationController.StopProcess(AvailableProcessIds.Temperature)
         }
         else
         {
@@ -593,15 +503,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         {
             IPAdd = results[results.count - 1].ip
             
-            for ip in results
-            {
-                print(ip.ip)
-            }
+//            for ip in results
+//            {
+//                print(ip.ip)
+//            }
             IP.text = IPAdd;
+            
+           httpAPIPath = httpsting + IPAdd + port + apiPath
         }
-
-        
-        
         IPAdd = (sender as! UITextField).text!
     }
     
@@ -620,18 +529,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     {
         StatusAPICall()
         FluidStatusAPICall()
-        MakePlateFromAPIData()
-       
+        UpdatePlateAPICall()
     }
 
     
     func BuildPlateFromLoadProccess()
     {
-        let proccessID = "HHiPO3Nkv0eaHnMJTqD6QQ"
-        let urlToMod = "http://" + IPAdd + ":9001/api/processstatus/" + proccessID
-        let myUrl = NSURL(string: urlToMod)
+        let url = httpAPIPath + AvailableProcessIds.RunListManager
+        let requestUrl = NSURL(string: url)
 
-        let request = NSMutableURLRequest(URL:myUrl!);
+        let request = NSMutableURLRequest(URL:requestUrl!);
         request.HTTPMethod = "GET";
         
         // Compose a query string
@@ -643,14 +550,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             
             do
             {
-                
-            
-            
             if error != nil
             {
-                // println("error=\(error)")
                 self.HTTPErrorText = "error=\(error)"
-                //   self.setVal()
                 self.ConnectionIssue = true
                 return
             }
@@ -659,41 +561,37 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.ConnectionIssue = false
             }
             
-            //  println(response)
+            self.Plate.removeAll(keepCapacity: false)
+            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
             
-            self.ArrayRealPlate.removeAll(keepCapacity: false)
-            
-            // Print out response body
-          //  let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            
-          //  var err: NSError?
-            let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-            
-            let json = JSON(myJSON!)
+            let json = JSON(rawJSON!)
             
             if let details = json["Status"]["Details"].string{
                 
                 let rawJSONData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)!
-             //   var error: NSError?
                 if let JSONResponseDictionary = try NSJSONSerialization.JSONObjectWithData(rawJSONData, options: .MutableLeaves) as? NSDictionary
                 {
                     self.rows = 8
                     self.Colum = 12
-                    self.ArrayRealPlate.removeAll(keepCapacity: false)
+                    self.Plate.removeAll(keepCapacity: false)
                     
                     for i in 0 ..< self.rows
                     {
                         for j in 0 ..< self.Colum
                         {
                             let lab = self.A2Z[i] + String((j + 1))
-                            self.ArrayRealPlate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
+                            self.Plate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
                         }
                     }
-
-                        if let plateDic = JSONResponseDictionary.valueForKey("Plate") as? NSDictionary
+                    
+                    if let runlistdefinitionn = JSONResponseDictionary.valueForKey("RunListDefinition") as? NSDictionary
+                    {
+                        if let plateDictionary = runlistdefinitionn.valueForKey("Plate") as? NSDictionary
                         {
-                            if let plateName = plateDic.valueForKey("PlateName") as? NSString
+                            if let plateName = plateDictionary.valueForKey("PlateName") as? NSString
                             {
+                                 self.plateName = plateName as String;
+                                
                                 if plateName == "96"
                                 {
                                     self.rows = 8
@@ -706,57 +604,55 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                     self.Colum = 8
                                 }
                                 
+                                
+                               
                                 if plateName == "Stat" && self.StatusOut.text == "Acquiring"
                                 {
                                     dispatch_sync(dispatch_get_main_queue()) {
 
                                         self.StatTubeView.hidden = false
-                                        //self.CurrentWellOut.hidden = true
-                                        
+                                        self.CurrentWellOut.hidden = true
                                     }
                                 }
                                 else
                                 {
                                     dispatch_sync(dispatch_get_main_queue()) {
-
                                     self.StatTubeView.hidden = true;
-                                   // self.CurrentWellOut.hidden = false
+                                    self.CurrentWellOut.hidden = false
                                     }
                                 }
-                                self.ArrayRealPlate.removeAll(keepCapacity: false)
+                                self.Plate.removeAll(keepCapacity: false)
                                 for i in 0 ..< self.rows
                                 {
                                     for j in 0 ..< self.Colum
                                     {
                                         let lab = self.A2Z[i] + String((j + 1))
-                                        self.ArrayRealPlate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
+                                        self.Plate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
                                     }
                                 }
                             }
                         }
                 }}
             
-            }
+                }}
             catch
             {}
             }
         task.resume()
     }
 
-
-    
-    func MakePlateFromAPIData()
+ 
+    func UpdatePlateAPICall()
     {
-
-        self.BuildPlateFromLoadProccess()
+        if  self.StatusOut.text == "Acquiring" && self.newRunlistRequired == true {
+            
+            self.BuildPlateFromLoadProccess()
+            self.newRunlistRequired = false
+        }
         
-        let proccessID = "sjlZnQDaPUqEbqEuOcektw"
-
-        let urlToMod = "http://" + self.IPAdd + ":9001/api/processstatus/" + proccessID
-        
-        let myUrl = NSURL(string: urlToMod)
-        
-        let request = NSMutableURLRequest(URL:myUrl!);
+        let url = httpAPIPath + AvailableProcessIds.RunList
+        let requestUrl = NSURL(string: url)
+        let request = NSMutableURLRequest(URL:requestUrl!);
         request.HTTPMethod = "GET";
         
         // Compose a query string
@@ -766,12 +662,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
             data, response, error in
-            
-            
+
             do
             {
-                
-            
             if error != nil
             {
                 self.HTTPErrorText = "error=\(error)"
@@ -784,80 +677,74 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.ConnectionIssue = false
             }
             
-            self.ArrayRealPlate.removeAll(keepCapacity: false)
+            self.Plate.removeAll(keepCapacity: false)
             
-            // Print out response body
-           // let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+
+            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
             
-          //  var err: NSError?
-            let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-            
-            let json = JSON(myJSON!)
+            let json = JSON(rawJSON!)
             
             if let details = json["Status"]["Details"].string{
                 
                 let rawJSONData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)!
-            //    var error: NSError?
+                
                 if let jsonResponseDictionary = try NSJSONSerialization.JSONObjectWithData(rawJSONData, options: .MutableLeaves) as? NSDictionary
                 {
 
-                self.ArrayRealPlate.removeAll(keepCapacity: false)
+                self.Plate.removeAll(keepCapacity: false)
                     
                 for i in 0 ..< self.rows
                 {
                     for j in 0 ..< self.Colum
                     {
                         let lab = self.A2Z[i] + String((j + 1))
-                        self.ArrayRealPlate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
+                        self.Plate.append(PlateItemModel(Lable: lab, Name: "", Status: 1))
                     }
                 }
                 
-                
-                
-                if let runstatus = jsonResponseDictionary.valueForKey("RunStatuses") as? NSDictionary
+                if let runstatusDictionary = jsonResponseDictionary.valueForKey("RunStatuses") as? NSDictionary
                 {
-                    var thing = runstatus.allKeys
-                    
-                    let dddddd =  String( thing[0] as! NSString)
-
-                    if let runstatusLevel3 = runstatus.valueForKey(dddddd) as? NSDictionary
+                    for stepID in runstatusDictionary
                     {
-                        if let runstatusLevel4 = runstatusLevel3.valueForKey("StepStatuses") as? NSDictionary
+                    if let stepIDkey = runstatusDictionary.valueForKey(stepID.key as! String) as? NSDictionary
+                    {
+                        if let stepStatuses = stepIDkey.valueForKey("StepStatuses") as? NSDictionary
                         {
-                            for steps in runstatusLevel4
+                            for steps in stepStatuses
                             {
-                                let wellstatus =  (steps.value as? NSDictionary)?.valueForKey("FileStatus") as! Int
+                                let wellstatus =  (steps.value as? NSDictionary)?.valueForKey("SampleStatus") as! Int
                                 let hitTest = (steps.value as? NSDictionary)?.valueForKey("HitTestValue") as! Double
-
-                                for item in self.ArrayRealPlate
+                                  let sampleName = (steps.value as? NSDictionary)?.valueForKey("Name") as! String
+                                
+                                for item in self.Plate
                                 {
                                     if item.Lable == steps.key as! String
                                     {
                                         item.Status = wellstatus
                                         item.HitTest = hitTest
-                                        //item.Name = sampleName
+                                        item.Name = sampleName
                                     }
                                 }
 
                             }
-                            
-                            dispatch_sync(dispatch_get_main_queue()) {
-                                
-                                self.theCollection.reloadData()
-                            }
                         }
                     }
+                    }
                 }
+                    dispatch_sync(dispatch_get_main_queue()) {
+                        
+                        self.SamplePlateUICollection.reloadData()
+                    }
 
                     if let percentDone = jsonResponseDictionary.valueForKey("PercentComplete") as? Double
                     {
                         
-                        let thingddddd = NSString(format: "%.0f", percentDone * 100)
+                        let percentScaled = NSString(format: "%.0f", percentDone * 100)
                         let percent = "%"
                         
                         dispatch_sync(dispatch_get_main_queue()) {
                             
-                            self.PercentDone.text = "\(thingddddd)\(percent)"
+                            self.PercentDone.text = "\(percentScaled)\(percent)"
                         }
                     }
                     else{
@@ -876,11 +763,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         if let generatedDate = formatter.dateFromString(etaString)
                         {
                             formatter.dateFormat = "HH:mm:ss"
-                            let  fffffff = formatter.stringFromDate(generatedDate)
+                            let  formatedTime = formatter.stringFromDate(generatedDate)
 
                             dispatch_sync(dispatch_get_main_queue()) {
                                 
-                                self.TimeLeft.text = fffffff
+                                self.TimeLeft.text = formatedTime
                             }
                         }
                     }
@@ -915,11 +802,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             let thingtogo = (min as NSString).doubleValue
                             
                             let date = NSDate()
-                           // let calendar = NSCalendar.currentCalendar()
-                           // let components = calendar.components([.Hour, .Minute], fromDate: date)
-                           // let hour = components.hour
-                           // let minutes = components.minute
-                            
+                   
                             let formatters = NSDateFormatter()
                             formatters.locale = NSLocale(localeIdentifier: "en_US")
                             formatters.dateFormat = "HH:mm a"
@@ -946,12 +829,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         
                         for runItem in runs
                         {
-
-                            if let sam = runItem.valueForKey("Steps") as? NSArray
+                            if let steps = runItem.valueForKey("Steps") as? NSArray
                             {
                                 var sampleName = ""
                                 
-                                for well in sam
+                                for well in steps
                                 {
                                     let lab = well["WellId"]! as! String
                                     
@@ -962,7 +844,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
 
                                     let status = well["SampleStatus"] as! Int
                                     
-                                    for item in self.ArrayRealPlate
+                                    for item in self.Plate
                                     {
                                         if item.Lable == lab
                                         {
@@ -973,26 +855,25 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                     
                                     //self.ArrayRealPlate.append(PlateItemModel(Lable: lab, Name: lab, Status: status))
                                 }
-                                
                             }
                         }
                         self.index = 0.0
-                        if self.ArrayRealPlate.count < 40
+                        if self.Plate.count < 40
                         {
                             dispatch_sync(dispatch_get_main_queue()) {
-                                // self.theCollection.hidden = true
-                                // self.PercentDone.hidden = true
+                                 self.SamplePlateUICollection.hidden = true
+                                 self.PercentDone.hidden = true
                             }
                         }
                         else
                         {
                             dispatch_sync(dispatch_get_main_queue()) {
-                                //  self.theCollection.hidden = false
-                                // self.PercentDone.hidden = false
+                                  self.SamplePlateUICollection.hidden = false
+                                 self.PercentDone.hidden = false
                                 
                             }
                             dispatch_sync(dispatch_get_main_queue()) {
-                                self.theCollection.reloadData()
+                                self.SamplePlateUICollection.reloadData()
                             }
                         }
                     }
@@ -1008,7 +889,6 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     @IBAction func StartUp(sender: AnyObject) {
         
-        
         StartUpButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
         
         UIView.animateWithDuration(2.0,
@@ -1021,13 +901,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             }, completion: nil)
         
         let alert = UIAlertController(title: "Start", message: "Are you sure you want to start your Yeti?", preferredStyle: UIAlertControllerStyle.Alert)
-        //alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
         
         alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { action in
             switch action.style{
             case .Default:
-                self.ProcessStartOptions("G9YmHcihFUukolpuxi0lFw",options: "")
+                self.EVONetworkCommunicationController.ProcessStartOptions(self.AvailableProcessIds.Startup,options: "")
                 
             case .Cancel:
                 print("cancel")
@@ -1038,16 +917,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         }))
         alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default,handler: nil))
         
-        //        dispatch_async(dispatch_get_main_queue()) {
-        //         self.StartUpButton.hidden = true
-        //        }
-        
-        
     }
     
     @IBAction func ShutDown(sender: AnyObject) {
-        
-        
         
         ShutDownButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
         
@@ -1060,16 +932,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.ShutDownButton.transform = CGAffineTransformIdentity
             }, completion: nil)
         
-        
-        
         let alert = UIAlertController(title: "Shut Down", message: "Are you sure you want to shut down your Yeti?", preferredStyle: UIAlertControllerStyle.Alert)
-        //alert.addAction(UIAlertAction(title: "Click", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
         
         alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { action in
             switch action.style{
             case .Default:
-                self.ProcessStartOptions("Li-77xK4DESzHSLzwIMCGQ",options: "")
+                self.EVONetworkCommunicationController.ProcessStartOptions("Li-77xK4DESzHSLzwIMCGQ",options: "")
                 
             case .Cancel:
                 print("cancel")
@@ -1080,21 +949,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         }))
         
         alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default,handler: nil))
-        //        dispatch_async(dispatch_get_main_queue()) {
-        //            self.ShutDownButton.hidden = true
-        //        }
-        
-        
     }
     
-    //    @IBAction func SystemStatus(sender: AnyObject) {
-    //
-    //         ProcessStatusAPICall("swXmCQkfMUy8GXc7Uvo1qw")
-    //    }
-    //
-    //    @IBAction func View(sender: AnyObject) {
-    //
-    //    }
     
     func setVal()
     {
@@ -1104,6 +960,23 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     }
     
     
+    @IBAction func LightButtonAction(sender: AnyObject) {
+        LightButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        
+        UIView.animateWithDuration(2.0,
+                                   delay: 0,
+                                   usingSpringWithDamping: 0.2,
+                                   initialSpringVelocity: 6.0,
+                                   options: UIViewAnimationOptions.AllowUserInteraction,
+                                   animations: {
+                                    self.LightButton.transform = CGAffineTransformIdentity
+            }, completion: nil)
+        
+        EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.LoaderLightToggle, options: "")
+    }
+
+    
+    
     @IBAction func RunQCAPICall(sender: AnyObject) {
         
         QCButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
@@ -1111,22 +984,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         UIView.animateWithDuration(2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
-            initialSpringVelocity: 6.0,
+                       initialSpringVelocity: 6.0,
             options: UIViewAnimationOptions.AllowUserInteraction,
             animations: {
                 self.QCButton.transform = CGAffineTransformIdentity
             }, completion: nil)
         
-        
-       ProcessStartOptions("dzspBjyk40S5FuQgu4cDtw", options: "")
+       EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.PmtQC, options: "")
         
     }
     
     func StatusAPICall()
     {
-        let proccessID = "swXmCQkfMUy8GXc7Uvo1qw"
         
-        let urlToMod = "http://" + IPAdd + ":9001/api/processstatus/" + proccessID
+        let urlToMod = httpAPIPath + AvailableProcessIds.SystemStatus
         
         let myUrl = NSURL(string: urlToMod);
         
@@ -1143,36 +1014,23 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             
             do
             {
-            
             if error != nil
             {
-                // println("error=\(error)")
                 self.HTTPErrorText = "error=\(error)"
                 self.setVal()
                 return
             }
             
-            
-          //  var err: NSError?
-            let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-   
-            let json = JSON(myJSON!)
-            if let status = json["Status"]["StatusType"].string{
-                print("STATSSSS: \(status)")
-            }
-            
+            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+            let json = JSON(rawJSON!)
+
             if let details = json["Status"]["Details"].string{
 
-                if let ttttttt: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
+                if let detailsData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
                 {
-                 //   var error: NSError?
-                    
-                    
-                    
-                    
-                    if let ddddddd = try NSJSONSerialization.JSONObjectWithData(ttttttt, options: []) as? NSDictionary
+                    if let statusDictionary = try NSJSONSerialization.JSONObjectWithData(detailsData, options: []) as? NSDictionary
                     {
-                        if  let Name  = ddddddd.valueForKey("InstrumentName") as? String
+                        if  let Name  = statusDictionary.valueForKey("InstrumentName") as? String
                         {
                             dispatch_async(dispatch_get_main_queue()) {
                                 
@@ -1180,7 +1038,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             }
                         }
                         
-                        if let Status =  ddddddd.valueForKey("SystemStatus") as? Int
+                        if let Status =  statusDictionary.valueForKey("SystemStatus") as? Int
                         {
                             
                             var displayStatusText = ""
@@ -1229,9 +1087,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                 dispatch_async(dispatch_get_main_queue()) {
                                     
                                     self.ActivityInd.stopAnimating()
-                                    self.theCollection.hidden = true
-                                    
-                                    
+                                    self.SamplePlateUICollection.hidden = true
                                     self.PercentDone.text = ""
                                     self.TimeRemaining.text = ""
                                     self.TimeLeft.text = ""
@@ -1244,12 +1100,10 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                     self.labelRemaning.hidden = true
                                     self.timeOfDayDoneOut.hidden = true
                                     self.labelTimeofDay.hidden = true
+                                    self.StatTubeView.hidden = true
+                                    self.newRunlistRequired = true
                                     
-                                    
-                                    self.StatTubeView.hidden = true;
-                                    
-                                    
-                                }
+                                                                    }
                             }
                             else if Status == 7
                             {
@@ -1262,11 +1116,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                     self.ShutDownButton.hidden = true;
                                     //self.QCButton.hidden = true
                                     self.TimeViewButton.hidden = false
+                                  
+                                   if self.plateName != "Stat"
+                                   {
                                     self.CurrentWellOut.hidden = false
-                                    self.SampleNameOut.hidden = false
-                                    self.theCollection.hidden = false
-                                   
+                                    }
                                     
+                                    self.SampleNameOut.hidden = false
+                                    self.SamplePlateUICollection.hidden = false
                                 }
                             }
                             else if Status == 8
@@ -1296,14 +1153,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         {
                         }
                         
-                        if let isTempOn  = ddddddd.valueForKey("IsTemperatureControlEnabled") as? Bool
+                        if let isTempOn  = statusDictionary.valueForKey("IsTemperatureControlEnabled") as? Bool
                         {
                             dispatch_async(dispatch_get_main_queue()) {
                                 self.isTempOn = isTempOn
                                 
                             }
                         }
-                        if let targetTemp  = ddddddd.valueForKey("TemperatureTarget_C") as? Double
+                        if let targetTemp  = statusDictionary.valueForKey("TemperatureTarget_C") as? Double
                         {
                             dispatch_async(dispatch_get_main_queue()) {
                                 if targetTemp > 15
@@ -1321,26 +1178,24 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             }
                         }
                         
-                        if  let tempReal  = ddddddd.valueForKey("TemperatureCurrent_C") as? Double
+                        if  let tempReal  = statusDictionary.valueForKey("TemperatureCurrent_C") as? Double
                         {
                             dispatch_async(dispatch_get_main_queue()) {
+                                let formatedTemp =  NSString(format: "%.0f", tempReal)
+                                let c = "°C"
                                 
-                                
-                                let thing =  NSString(format: "%.0f", tempReal)
-                                let sdddd = "°C"
-                                
-                                self.TemReal.text = (thing as String) + sdddd
+                                self.TemReal.text = (formatedTemp as String) + c
                             }
                         }
                         
-                        if let currentQuickActions = ddddddd.valueForKey("QuickActionProcessIds") as? [String]
+                        if let currentQuickActions = statusDictionary.valueForKey("QuickActionProcessIds") as? [String]
                         {
                             
                             for quickActionItem in currentQuickActions
                             {
                                 
                                 //StartUp
-                                if quickActionItem == "G9YmHcihFUukolpuxi0lFw"
+                                if quickActionItem == self.AvailableProcessIds.Startup
                                 {
                                     dispatch_async(dispatch_get_main_queue()) {
                                         self.StartUpButton.hidden = false;
@@ -1349,7 +1204,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                 }
                                 
                                 //Shutdown
-                                if quickActionItem == "Li-77xK4DESzHSLzwIMCGQ"
+                                if quickActionItem ==  self.AvailableProcessIds.Shutdown
                                 {
                                     dispatch_async(dispatch_get_main_queue()) {
                                         self.StartUpButton.hidden = true;
@@ -1359,11 +1214,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             }
                             
                         }
-                        
-                        
-                        //var users = ddddddd!.valueForKey("Users") as! Array
-                        
-                        if let usersArray = ddddddd.valueForKey("Users") as? NSArray
+
+                        if let usersArray = statusDictionary.valueForKey("Users") as? NSArray
                         {
                             let users = usersArray[0] as! String
                             
@@ -1373,22 +1225,21 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             }
                         }
                         
-                        if let firmV = ddddddd.valueForKey("FirmwareVersion") as? NSString
+                        if let firmwareVersion = statusDictionary.valueForKey("FirmwareVersion") as? NSString
                         {
                             dispatch_async(dispatch_get_main_queue()) {
-                                self.FirmOut.text = firmV as String
+                                self.FirmOut.text = firmwareVersion as String
                             }
                         }
                         
-                        if let softOut = ddddddd.valueForKey("SoftwareVersion") as? NSString
+                        if let softwareVersion = statusDictionary.valueForKey("SoftwareVersion") as? NSString
                         {
                             dispatch_async(dispatch_get_main_queue()) {
-                                self.SoftwareVout.text = softOut as String
+                                self.SoftwareVout.text = softwareVersion as String
                                 
                             }
                         }
                     }
-                   
                 }
             }
                 }
@@ -1397,21 +1248,27 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         }
         task.resume()
     }
-    
+    @IBAction func DoorAction(sender: AnyObject) {
+        
+        DoorButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        
+        UIView.animateWithDuration(2.0,
+                                   delay: 0,
+                                   usingSpringWithDamping: 0.2,
+                                   initialSpringVelocity: 6.0,
+                                   options: UIViewAnimationOptions.AllowUserInteraction,
+                                   animations: {
+                                    self.DoorButton.transform = CGAffineTransformIdentity
+            }, completion: nil)
+
+        EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.LoaderDoorToggle, options: "")
+    }
     
     func FluidStatusAPICall()
     {
-        
-            
-        let proccessID = "hJlSw6fZ2kGptaB2eSvz4A"
-        
-        let urlToMod = "http://" + IPAdd + ":9001/api/processstatus/" + proccessID
-        
-        let myUrl = NSURL(string: urlToMod);
-        
-        //  myUrl +=  "api/processstatus/" + proccessID
-        
-        let request = NSMutableURLRequest(URL:myUrl!);
+        let url = httpAPIPath + AvailableProcessIds.BulkFluids
+        let requestUrl = NSURL(string: url);
+        let request = NSMutableURLRequest(URL:requestUrl!);
         request.HTTPMethod = "GET";
         
         // Compose a query string
@@ -1422,49 +1279,28 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
             data, response, error in
             
-            
             do
             {
-            
             if error != nil
             {
-                // println("error=\(error)")
                 self.HTTPErrorText = "error=\(error)"
                 self.setVal()
                 return
             }
-            
-         //   var err: NSError?
-            
-            
+             
+            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
            
-            
-            let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-           
-            let json = JSON(myJSON!)
+            let json = JSON(rawJSON!)
             
             if let details = json["Status"]["Details"].string{
                 
                 if let statusDetails: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
                 {
-                 //   var error: NSError?
-                    
                     if let detailsDictionary = try NSJSONSerialization.JSONObjectWithData(statusDetails, options: []) as? NSDictionary
                     {
-//                        var w1: Float = 0.0;
-//                        var w2: Float = 0.0;
                         var d1: Float = 0.0;
                         var d2: Float = 0.0;
                         
-                        
-//                        if let Wast_1  = detailsDictionary.valueForKey("WastARatio") as? Float
-//                        {
-//                            w1 = Wast_1
-//                        }
-//                        if let Wast_2 =  detailsDictionary.valueForKey("WastBRatio") as? Float
-//                        {
-//                            w2 = Wast_2
-//                        }
                         if let DI_1 = detailsDictionary.valueForKey("DIARatio") as? Float
                         {
                             d1 = DI_1
@@ -1496,18 +1332,12 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                 }
                             }
                         }
-                       // let realWast = (w1 + w2) / 2.0
+                       
                         let realDI = (d1 + d2) / 2.0
-                        
                         dispatch_async(dispatch_get_main_queue()) {
-                            
-                           // self.wast1.setProgress( realWast, animated: true)
                             self.DI1.setProgress( realDI, animated: true)
                         }
                     }
-                    
-                    
-               
                 }
             }
                 
@@ -1516,50 +1346,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             {}
         }
         task.resume()
-            
-     
     }
     
-    @IBAction func findIP(sender: AnyObject) {
-        
-        
-//        let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-//        dispatch_async(dispatch_get_global_queue(priority, 0)) {
-//            var indexme = 0
-//            var runing = true
-//            
-//            while runing
-//            {
-//                if self.ConnectionIssue == false
-//                {
-//                    runing = false
-//                    break
-//                }
-//                
-//                if indexme > 30
-//                {
-//                    break
-//                }
-//                
-//                self.IPAdd = "10.0.1." + String(indexme)
-//                
-//                indexme += 1
-//                
-//                sleep(1)
-//            }
-//            
-//        }
-        
-        
-    }
+
     
     func ProcessStatusAPICall( proccessID:String )
     {
-        let urlToMod = "http://" + IPAdd + ":9001/api/processstatus/" + proccessID
+        let url = httpAPIPath + proccessID
+        let requestUrl = NSURL(string: url);
         
-        let myUrl = NSURL(string: urlToMod);
-        
-        let request = NSMutableURLRequest(URL:myUrl!);
+        let request = NSMutableURLRequest(URL:requestUrl!);
         request.HTTPMethod = "GET";
         
         // Compose a query string
@@ -1570,25 +1366,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
             data, response, error in
             
-            
             do
             {
             if error != nil
             {
-                //   println("error=\(error)")
                 self.HTTPErrorText = "error=\(error)"
                 self.setVal()
                 return
             }
-            
-             // let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-             //  var err: NSError?
-             // let myJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
-            // let json = JSON(myJSON!)
                 
             }
-//            catch
-//            {}
         }
         task.resume()
     }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -10,34 +11,34 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="0.01" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
-                    <rect key="frame" x="148.5" y="294" width="184.5" height="27.5"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Evo icon 8.png" translatesAutoresizingMaskIntoConstraints="NO" id="Dge-gX-pfS">
+                    <rect key="frame" x="151" y="150" width="180" height="180"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="180" id="5M0-GW-OAt"/>
+                        <constraint firstAttribute="height" constant="180" id="ZHH-fO-f76"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Copyright (c) 2016 Propel Labs. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
+                    <rect key="frame" x="124" y="461" width="232" height="11"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="9"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RealEvoLogo150pxT" translatesAutoresizingMaskIntoConstraints="NO" id="Dge-gX-pfS">
-                    <rect key="frame" x="109" y="194" width="261" height="92"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="261" id="YNc-Ff-o13"/>
-                        <constraint firstAttribute="height" constant="92" id="a7Z-pm-NjX"/>
-                    </constraints>
-                </imageView>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="  Copyright (c) 2015 com.RMTEK. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="8ie-xW-0ye">
-                    <rect key="frame" x="38" y="451" width="404" height="21"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.02" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
+                    <rect key="frame" x="215" y="335" width="51" height="28"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="Dge-gX-pfS" secondAttribute="centerX" id="2N2-kH-5v1"/>
-                <constraint firstAttribute="centerX" secondItem="kId-c2-rCX" secondAttribute="centerX" id="55M-cu-2ei"/>
+                <constraint firstItem="Dge-gX-pfS" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="2rF-o7-A7X"/>
+                <constraint firstItem="Dge-gX-pfS" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="6Ag-9W-8ib"/>
+                <constraint firstItem="kId-c2-rCX" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Daz-6p-NB3"/>
                 <constraint firstAttribute="centerX" secondItem="8ie-xW-0ye" secondAttribute="centerX" id="EU9-Ub-6J3"/>
-                <constraint firstItem="kId-c2-rCX" firstAttribute="top" secondItem="Dge-gX-pfS" secondAttribute="bottom" constant="8" id="IJV-FD-XFX"/>
                 <constraint firstAttribute="bottom" secondItem="8ie-xW-0ye" secondAttribute="bottom" constant="8.5" id="M2t-T7-8hK"/>
-                <constraint firstAttribute="centerY" secondItem="Dge-gX-pfS" secondAttribute="centerY" id="tLL-ah-N4m"/>
+                <constraint firstItem="kId-c2-rCX" firstAttribute="top" secondItem="Dge-gX-pfS" secondAttribute="bottom" constant="5" id="hJw-Tj-lgK"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -45,6 +46,6 @@
         </view>
     </objects>
     <resources>
-        <image name="RealEvoLogo150pxT" width="422" height="150"/>
+        <image name="Evo icon 8.png" width="256" height="256"/>
     </resources>
 </document>

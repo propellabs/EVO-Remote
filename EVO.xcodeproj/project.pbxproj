@@ -20,6 +20,9 @@
 		00961B1A1B54CB2D00B1B5F0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00961B191B54CB2D00B1B5F0 /* CoreData.framework */; };
 		00961B4E1B54CC2100B1B5F0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00961B4C1B54CC2100B1B5F0 /* Model.xcdatamodeld */; };
 		00AC29CD1B64228B001CFC17 /* THEIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AC29CC1B64228B001CFC17 /* THEIP.swift */; };
+		3911614A1CAC5CB20068D4CC /* ProcessIds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391161491CAC5CB20068D4CC /* ProcessIds.swift */; };
+		3911614C1CADAA190068D4CC /* NetworkCommunicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3911614B1CADAA190068D4CC /* NetworkCommunicationController.swift */; };
+		3948C3D21CB701AC0050F782 /* Evo icon 8.png in Resources */ = {isa = PBXBuildFile; fileRef = 3948C3D11CB701AC0050F782 /* Evo icon 8.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +52,9 @@
 		00961B191B54CB2D00B1B5F0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		00961B4D1B54CC2100B1B5F0 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		00AC29CC1B64228B001CFC17 /* THEIP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = THEIP.swift; path = EVO.xcodeproj/../THEIP.swift; sourceTree = SOURCE_ROOT; };
+		391161491CAC5CB20068D4CC /* ProcessIds.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProcessIds.swift; sourceTree = "<group>"; };
+		3911614B1CADAA190068D4CC /* NetworkCommunicationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkCommunicationController.swift; sourceTree = "<group>"; };
+		3948C3D11CB701AC0050F782 /* Evo icon 8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Evo icon 8.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,11 +105,14 @@
 				0011DBA51B2B83500004CEC2 /* Serializable.swift */,
 				0027216E1B13AE2F00DFC0EA /* Images.xcassets */,
 				002721701B13AE2F00DFC0EA /* LaunchScreen.xib */,
+				3948C3D11CB701AC0050F782 /* Evo icon 8.png */,
 				002721651B13AE2F00DFC0EA /* Supporting Files */,
 				0011DB9F1B2B7B390004CEC2 /* ProccessArgs.swift */,
 				00113F811B2B973000A4D601 /* SwiftyJSON.swift */,
 				000E36A51B3148E9008BDF98 /* NotInUse.swift */,
 				00961B4C1B54CC2100B1B5F0 /* Model.xcdatamodeld */,
+				391161491CAC5CB20068D4CC /* ProcessIds.swift */,
+				3911614B1CADAA190068D4CC /* NetworkCommunicationController.swift */,
 			);
 			name = EVO;
 			path = EVORemote_0.01;
@@ -163,7 +172,7 @@
 			attributes = {
 				LastSwiftMigration = 0710;
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = com.RMTEK;
 				TargetAttributes = {
 					002721611B13AE2F00DFC0EA = {
@@ -200,6 +209,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3948C3D21CB701AC0050F782 /* Evo icon 8.png in Resources */,
 				0027216D1B13AE2F00DFC0EA /* Main.storyboard in Resources */,
 				002721721B13AE2F00DFC0EA /* LaunchScreen.xib in Resources */,
 				0027216F1B13AE2F00DFC0EA /* Images.xcassets in Resources */,
@@ -226,8 +236,10 @@
 				0011DBA01B2B7B390004CEC2 /* ProccessArgs.swift in Sources */,
 				00961B4E1B54CC2100B1B5F0 /* Model.xcdatamodeld in Sources */,
 				0027216A1B13AE2F00DFC0EA /* ViewController.swift in Sources */,
+				3911614C1CADAA190068D4CC /* NetworkCommunicationController.swift in Sources */,
 				000D2FFD1B2E8CCD00B04B04 /* PlateItemModel.swift in Sources */,
 				00113F821B2B973000A4D601 /* SwiftyJSON.swift in Sources */,
+				3911614A1CAC5CB20068D4CC /* ProcessIds.swift in Sources */,
 				002721681B13AE2F00DFC0EA /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,10 +298,12 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -305,9 +319,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "7d9e05c6-d1ca-4738-8e3f-284c147fbaf1";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 2;
@@ -331,7 +346,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -344,8 +360,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "7d9e05c6-d1ca-4738-8e3f-284c147fbaf1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -358,8 +375,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = EVORemote_0.01/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Propel.Labs.EVO.GO;
 				PRODUCT_NAME = EVO;
@@ -374,8 +392,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = EVORemote_0.01/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.Propel.Labs.EVO.GO;
 				PRODUCT_NAME = EVO;
@@ -398,6 +417,7 @@
 				);
 				INFOPLIST_FILE = EVORemote_0.01Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.RMTEK.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = EVOTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EVORemote_0.01.app/EVORemote_0.01";
 			};
@@ -413,6 +433,7 @@
 				);
 				INFOPLIST_FILE = EVORemote_0.01Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.RMTEK.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = EVOTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EVORemote_0.01.app/EVORemote_0.01";
 			};
