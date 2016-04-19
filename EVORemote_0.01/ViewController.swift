@@ -36,7 +36,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     var plateName = "";
     
     
-    
+    //UI Outlet
     @IBOutlet var QCButton: UIButton!
     @IBOutlet var labelTimeofDay: UILabel!
     @IBOutlet var timeOfDayDoneOut: UILabel!
