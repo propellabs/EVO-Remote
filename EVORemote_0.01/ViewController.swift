@@ -509,6 +509,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
 //            }
             IP.text = IPAdd;
             
+           EVONetworkCommunicationController.IP = IPAdd
+            
            httpAPIPath = httpsting + IPAdd + port + apiPath
         }
         IPAdd = (sender as! UITextField).text!
