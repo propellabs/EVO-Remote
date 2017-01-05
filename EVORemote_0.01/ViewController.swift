@@ -897,6 +897,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     @IBAction func StartUp(_ sender: AnyObject) {
         
+        if self.StatusOut.text == "Starting Up" || self.StatusOut.text == "Calibrating"
+        {
+            return
+        }
+        
+        
+        
         StartUpButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
         UIView.animate(withDuration: 2.0,
@@ -914,7 +921,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
             switch action.style{
             case .default:
-                self.EVONetworkCommunicationController.ProcessStartOptions(self.AvailableProcessIds.Startup,options: "")
+                
+                let para:NSMutableDictionary = NSMutableDictionary()
+                para.setValue("", forKey: "EyeOptions")
+                para.setValue("false", forKey: "RunEye")
+                para.setValue("true", forKey: "RunQC")
+                para.setValue("true", forKey: "RunStartup")
+                
+                
+                let jsonData = try! JSONSerialization.data(withJSONObject: para, options: [])
+                let postString = NSString(data: jsonData, encoding: String.Encoding.utf8.rawValue) as! String
+                self.EVONetworkCommunicationController.ProcessStartOptions(self.AvailableProcessIds.FullStartup,options: postString)
                 
             case .cancel:
                 print("cancel")
@@ -928,6 +945,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     }
     
     @IBAction func ShutDown(_ sender: AnyObject) {
+        
+        if self.StatusOut.text == "Shutting Down..." || self.StatusOut.text == "Calibrating"
+        {
+            return
+        }
         
         ShutDownButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
@@ -987,6 +1009,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     @IBAction func RunQCAPICall(_ sender: AnyObject) {
         
+        if self.StatusOut.text == "Calibrating" || self.StatusOut.text == "Starting Up"  || self.StatusOut.text == "Shutting Down..."
+            
+            
+        {
+            return
+        }
+
         QCButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
         UIView.animate(withDuration: 2.0,
@@ -1203,11 +1232,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             {
                                 
                                 //StartUp
-                                if quickActionItem == self.AvailableProcessIds.Startup
+                                if quickActionItem == self.AvailableProcessIds.FullStartup
                                 {
                                     DispatchQueue.main.async {
+                                      
+                                        
                                         self.StartUpButton.isHidden = false;
                                         self.ShutDownButton.isHidden = true;
+
+                                        
+                                       
                                     }
                                 }
                                 
@@ -1215,9 +1249,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                 if quickActionItem ==  self.AvailableProcessIds.Shutdown
                                 {
                                     DispatchQueue.main.async {
+                             
+                                        
                                         self.StartUpButton.isHidden = true;
                                         self.ShutDownButton.isHidden = false;
-                                    }
+
+                                    
+                                                                           }
                                 }
                             }
                             
