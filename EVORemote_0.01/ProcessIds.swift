@@ -9,7 +9,7 @@
 import Foundation
 
 
-public  class ProcessIds
+open  class ProcessIds
 {
     
     

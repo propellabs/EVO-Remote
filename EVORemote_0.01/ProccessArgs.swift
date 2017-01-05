@@ -9,7 +9,7 @@
 import Foundation
 
 
-public class ProcessArg:Serializable {
+open class ProcessArg {
     var ProcessId: String = ""
     var Options: String = ""
     

@@ -11,6 +11,7 @@ import CoreData
 
 class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDataSource, UICollectionViewDelegate {
     
+    var newone = ""
     var HTTPErrorText = ""
     var IPAdd = ""
     var Array = [PlateItemModel]()
@@ -34,6 +35,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     let AvailableProcessIds =  ProcessIds()
     var newRunlistRequired = true;
     var plateName = "";
+    var tempval = "";
     
     
     //UI Outlet
@@ -89,9 +91,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         {
             if isTempOn == false
             {
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     
-                    self.TempControlView.hidden = true
+                    self.TempControlView.isHidden = true
                 }
                 
                 if watchForTempChange == true
@@ -100,26 +102,26 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                     {
                         APICallTempToHot ()
                         
-                        dispatch_async(dispatch_get_main_queue()) {
-                            self.FireImage.hidden = false
-                            self.coolImage.hidden = true
+                        DispatchQueue.main.async {
+                            self.FireImage.isHidden = false
+                            self.coolImage.isHidden = true
                         }
                     }
                     else
                     {
                         APICallTempToCold ()
-                        dispatch_async(dispatch_get_main_queue()) {
-                            self.FireImage.hidden = true
-                            self.coolImage.hidden = false
+                        DispatchQueue.main.async {
+                            self.FireImage.isHidden = true
+                            self.coolImage.isHidden = false
                         }
                     }
                 }
             }
             if isTempOn == true
             {
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     
-                    self.TempControlView.hidden = false
+                    self.TempControlView.isHidden = false
                 }
             }
         }
@@ -135,18 +137,18 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             {
                 if connectTimeoutCount > 5
                 {
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         
-                        self.ConnectionIssueImage.hidden = false
-                        self.PowerOnImage.hidden = true
+                        self.ConnectionIssueImage.isHidden = false
+                        self.PowerOnImage.isHidden = true
                         self.StatusOut.text = ""
                         self.NameOut.text = ""
                         self.Users.text = ""
                         self.DI1.progress = 0.0
-                        self.QuickActionBar.hidden = true
-                        self.QCButton.hidden = true
-                        self.TempControlView.hidden = true
-                        self.PlateView.hidden = true
+                        self.QuickActionBar.isHidden = true
+                        self.QCButton.isHidden = true
+                        self.TempControlView.isHidden = true
+                        self.PlateView.isHidden = true
                         self.connectTimeoutCount = 0
                         
                     }
@@ -158,14 +160,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             }
             if ConnectionIssue == false
             {
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     
-                    self.ConnectionIssueImage.hidden = true
-                    self.PowerOnImage.hidden = false
+                    self.ConnectionIssueImage.isHidden = true
+                    self.PowerOnImage.isHidden = false
                     self.dataout1.text = ""
-                    self.QuickActionBar.hidden = false
-                    self.QCButton.hidden = false
-                    self.PlateView.hidden = false
+                    self.QuickActionBar.isHidden = false
+                    self.QCButton.isHidden = false
+                    self.PlateView.isHidden = false
                 }
             }
             
@@ -176,11 +178,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let appDel:AppDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
+        let appDel:AppDelegate = (UIApplication.shared.delegate as! AppDelegate)
         let context:NSManagedObjectContext = appDel.managedObjectContext!
-        let request = NSFetchRequest(entityName: "THEIP")
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "THEIP")
         
-        var results = (try! context.executeFetchRequest(request)) as! [THEIP]
+        var results = (try! context.fetch(request)) as! [THEIP]
         
         if( results.count > 0)
         {
@@ -193,9 +195,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         {
         }
         
-        UIApplication.sharedApplication().idleTimerDisabled = true
+        UIApplication.shared.isIdleTimerDisabled = true
         
-        DetailsView.hidden = true
+        DetailsView.isHidden = true
 
         let diceRoll = Int(arc4random_uniform(7))
         let placeHolder = PlateItemModel(Lable: String(diceRoll), Name: String(diceRoll), Status: diceRoll)
@@ -204,21 +206,21 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             Plate.append(placeHolder)
         }
         
-        ConnectionIssueImage.hidden = true
-        DI1.transform = CGAffineTransformMakeRotation(CGFloat(M_PI + M_PI_2))
+        ConnectionIssueImage.isHidden = true
+        DI1.transform = CGAffineTransform(rotationAngle: CGFloat(M_PI + M_PI_2))
         IP.delegate = self
-        TempControlView.hidden = true
+        TempControlView.isHidden = true
         
-        NSTimer.scheduledTimerWithTimeInterval(pingTime, target: self, selector: #selector(ViewController.RunAllHTTPGetAPICalls), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: pingTime, target: self, selector: #selector(ViewController.RunAllHTTPGetAPICalls), userInfo: nil, repeats: true)
         
-        dispatch_async(dispatch_get_main_queue()) {
-            self.SamplePlateUICollection.hidden = true
-            self.PercentDone.hidden = true
-            self.TimeLeft.hidden = true
-            self.TimeRemaining.hidden = false
-            self.coolImage.hidden = true
-            self.FireImage.hidden = true
-            self.StatTubeView.hidden = true;
+        DispatchQueue.main.async {
+            self.SamplePlateUICollection.isHidden = true
+            self.PercentDone.isHidden = true
+            self.TimeLeft.isHidden = true
+            self.TimeRemaining.isHidden = false
+            self.coolImage.isHidden = true
+            self.FireImage.isHidden = true
+            self.StatTubeView.isHidden = true;
         }
     }
     
@@ -226,20 +228,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         super.didReceiveMemoryWarning()
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return Colum
         
     }
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return rows
     }
     
     
     @IBOutlet var SamplePlateUICollection: UICollectionView!
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("cell", forIndexPath: indexPath) 
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) 
         let ID = cell.viewWithTag(9898) as! UILabel
         index += 1
         
@@ -258,17 +260,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             
              if plate[indexPath.row + Colum * indexPath.section].Status == 1
             {
-                cell.layer.backgroundColor = UIColor.grayColor().CGColor
+                cell.layer.backgroundColor = UIColor.gray.cgColor
             }
             else if plate[indexPath.row + Colum * indexPath.section].Status == 2
             {
-                cell.layer.backgroundColor = UIColor.orangeColor().CGColor
+                cell.layer.backgroundColor = UIColor.orange.cgColor
                 
                 self.CurrentName = plate[indexPath.row + Colum * indexPath.section].Name
                 self.CurrentWell = plate[indexPath.row + Colum * indexPath.section].Lable
                 
-                dispatch_async(dispatch_get_main_queue()) {
-                    if self.StatTubeView.hidden == true
+                DispatchQueue.main.async {
+                    if self.StatTubeView.isHidden == true
                     {
                     self.SampleNameOut.text = self.CurrentName
                     self.CurrentWellOut.text = self.CurrentWell
@@ -277,109 +279,109 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             }
             else if plate[indexPath.row + Colum * indexPath.section].Status == 3
             {
-                cell.layer.backgroundColor =  UIColor(red: 0.0, green: 0.4, blue: 0.0, alpha: 1).CGColor
+                cell.layer.backgroundColor =  UIColor(red: 0.0, green: 0.4, blue: 0.0, alpha: 1).cgColor
             }
             else 
             {
-                 cell.layer.backgroundColor = UIColor.grayColor().CGColor
+                 cell.layer.backgroundColor = UIColor.gray.cgColor
             }
             
             if plate[indexPath.row + Colum * indexPath.section].HitTest > 0.15
             {
-                cell.layer.backgroundColor = UIColor.greenColor().CGColor
+                cell.layer.backgroundColor = UIColor.green.cgColor
             }
        
         }
         return cell
     }
     
-    @IBAction func DetailViewControl(sender: AnyObject) {
+    @IBAction func DetailViewControl(_ sender: AnyObject) {
         
-        DetailsButt.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        DetailsButt.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
             initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.DetailsButt.transform = CGAffineTransformIdentity
+                self.DetailsButt.transform = CGAffineTransform.identity
             }, completion: nil)
         
         
-        DetailsView.hidden = !DetailsView.hidden
+        DetailsView.isHidden = !DetailsView.isHidden
     }
     
-    @IBAction func CloseDetails(sender: AnyObject) {
+    @IBAction func CloseDetails(_ sender: AnyObject) {
         
-        DetailsView.hidden = true
+        DetailsView.isHidden = true
     }
     
     var clockIndex = 0
     
-    @IBAction func ClockSwitchView(sender: AnyObject) {
+    @IBAction func ClockSwitchView(_ sender: AnyObject) {
         
-        TimeViewButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        TimeViewButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
             initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.TimeViewButton.transform = CGAffineTransformIdentity
+                self.TimeViewButton.transform = CGAffineTransform.identity
             }, completion: nil)
         
         
         if clockIndex == 0
         {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.PercentDone.hidden = true
-                self.TimeLeft.hidden = false
-                self.TimeRemaining.hidden = true
-                self.labelTotal.hidden = false
-                self.labelRemaning.hidden = true
-                self.timeOfDayDoneOut.hidden = true
-                self.labelTimeofDay.hidden = true
+            DispatchQueue.main.async {
+                self.PercentDone.isHidden = true
+                self.TimeLeft.isHidden = false
+                self.TimeRemaining.isHidden = true
+                self.labelTotal.isHidden = false
+                self.labelRemaning.isHidden = true
+                self.timeOfDayDoneOut.isHidden = true
+                self.labelTimeofDay.isHidden = true
             }
             clockIndex += 1
         }
         else if clockIndex == 1
         {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.PercentDone.hidden = false
-                self.TimeLeft.hidden = true
-                self.TimeRemaining.hidden = true
-                self.labelTotal.hidden = true
-                self.labelRemaning.hidden = true
-                self.timeOfDayDoneOut.hidden = true
-                self.labelTimeofDay.hidden = true
+            DispatchQueue.main.async {
+                self.PercentDone.isHidden = false
+                self.TimeLeft.isHidden = true
+                self.TimeRemaining.isHidden = true
+                self.labelTotal.isHidden = true
+                self.labelRemaning.isHidden = true
+                self.timeOfDayDoneOut.isHidden = true
+                self.labelTimeofDay.isHidden = true
             }
             clockIndex += 1
         }
         else if clockIndex == 2
         {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.PercentDone.hidden = true
-                self.TimeLeft.hidden = true
-                self.TimeRemaining.hidden = false
-                self.labelTotal.hidden = true
-                self.labelRemaning.hidden = false
-                self.timeOfDayDoneOut.hidden = true
-                self.labelTimeofDay.hidden = true
+            DispatchQueue.main.async {
+                self.PercentDone.isHidden = true
+                self.TimeLeft.isHidden = true
+                self.TimeRemaining.isHidden = false
+                self.labelTotal.isHidden = true
+                self.labelRemaning.isHidden = false
+                self.timeOfDayDoneOut.isHidden = true
+                self.labelTimeofDay.isHidden = true
             }
             clockIndex += 1
         }
         else if clockIndex == 3
         {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.PercentDone.hidden = true
-                self.TimeLeft.hidden = true
-                self.TimeRemaining.hidden = true
-                self.labelTotal.hidden = true
-                self.labelRemaning.hidden = true
-                self.timeOfDayDoneOut.hidden = false
-                self.labelTimeofDay.hidden = false
+            DispatchQueue.main.async {
+                self.PercentDone.isHidden = true
+                self.TimeLeft.isHidden = true
+                self.TimeRemaining.isHidden = true
+                self.labelTotal.isHidden = true
+                self.labelRemaning.isHidden = true
+                self.timeOfDayDoneOut.isHidden = false
+                self.labelTimeofDay.isHidden = false
             }
             clockIndex += 1
         }
@@ -391,26 +393,26 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         
     }
 
-    @IBAction func StopTempButt(sender: AnyObject) {
+    @IBAction func StopTempButt(_ sender: AnyObject) {
 
-        StopTempButt.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        StopTempButt.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
             initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.StopTempButt.transform = CGAffineTransformIdentity
+                self.StopTempButt.transform = CGAffineTransform.identity
             }, completion: nil)
 
         self.EVONetworkCommunicationController.StopProcess(AvailableProcessIds.Temperature)
         
     }
     
-    @IBAction func OpenDetails(sender: AnyObject) {
+    @IBAction func OpenDetails(_ sender: AnyObject) {
         
-        DetailsView.hidden = false
+        DetailsView.isHidden = false
     }
     
     func APICallTempToCold()
@@ -427,17 +429,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     
     
     
-    @IBAction func TempToHot(sender: AnyObject) {
+    @IBAction func TempToHot(_ sender: AnyObject) {
         
-        HeatUpButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        HeatUpButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
  
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
             initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.HeatUpButton.transform = CGAffineTransformIdentity
+                self.HeatUpButton.transform = CGAffineTransform.identity
             }, completion: nil)
         
         if self.isTempOn == true {
@@ -452,17 +454,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
 
     }
     
-    @IBAction func TempToCool(sender: AnyObject) {
+    @IBAction func TempToCool(_ sender: AnyObject) {
         
-        CoolDownButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        CoolDownButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
             initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.CoolDownButton.transform = CGAffineTransformIdentity
+                self.CoolDownButton.transform = CGAffineTransform.identity
             }, completion: nil)
 
         if self.isTempOn == true {
@@ -480,13 +482,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     @IBOutlet var TempToCool: UIButton!
     
     
-    @IBAction func IPChanged(sender: AnyObject) {
+    @IBAction func IPChanged(_ sender: AnyObject) {
 
-        let appDel:AppDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
+        let appDel:AppDelegate = (UIApplication.shared.delegate as! AppDelegate)
         
         let context:NSManagedObjectContext = appDel.managedObjectContext!
         
-        let newIP = NSEntityDescription.insertNewObjectForEntityForName("THEIP", inManagedObjectContext: context) as! THEIP
+        let newIP = NSEntityDescription.insertNewObject(forEntityName: "THEIP", into: context) as! THEIP
         
         newIP.setValue((sender as! UITextField).text, forKey: "ip")
         
@@ -495,9 +497,9 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         } catch _ {
         }
 
-        let request = NSFetchRequest(entityName: "THEIP")
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "THEIP")
         
-        var results = (try! context.executeFetchRequest(request)) as! [THEIP]
+        var results = (try! context.fetch(request)) as! [THEIP]
         
         if( results.count > 0)
         {
@@ -514,15 +516,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
            httpAPIPath = httpsting + IPAdd + port + apiPath
         }
         IPAdd = (sender as! UITextField).text!
+        EVONetworkCommunicationController.IP = IPAdd
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
         return true
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
@@ -538,16 +541,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     func BuildPlateFromLoadProccess()
     {
         let url = httpAPIPath + AvailableProcessIds.RunListManager
-        let requestUrl = NSURL(string: url)
+        let requestUrl = URL(string: url)
 
-        let request = NSMutableURLRequest(URL:requestUrl!);
-        request.HTTPMethod = "GET";
+        var request = URLRequest(url:requestUrl!);
+        request.httpMethod = "GET";
         
         // Compose a query string
         let postString = "";
         
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding);
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        request.httpBody = postString.data(using: String.Encoding.utf8);
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {
             data, response, error in
             
             do
@@ -563,19 +566,19 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.ConnectionIssue = false
             }
             
-            self.Plate.removeAll(keepCapacity: false)
-            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+            self.Plate.removeAll(keepingCapacity: false)
+            let rawJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
             
             let json = JSON(rawJSON!)
             
             if let details = json["Status"]["Details"].string{
                 
-                let rawJSONData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)!
-                if let JSONResponseDictionary = try NSJSONSerialization.JSONObjectWithData(rawJSONData, options: .MutableLeaves) as? NSDictionary
+                let rawJSONData: Data = details.data(using: String.Encoding.utf8)!
+                if let JSONResponseDictionary = try JSONSerialization.jsonObject(with: rawJSONData, options: .mutableLeaves) as? NSDictionary
                 {
                     self.rows = 8
                     self.Colum = 12
-                    self.Plate.removeAll(keepCapacity: false)
+                    self.Plate.removeAll(keepingCapacity: false)
                     
                     for i in 0 ..< self.rows
                     {
@@ -586,11 +589,11 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         }
                     }
                     
-                    if let runlistdefinitionn = JSONResponseDictionary.valueForKey("RunListDefinition") as? NSDictionary
+                    if let runlistdefinitionn = JSONResponseDictionary.value(forKey: "RunListDefinition") as? NSDictionary
                     {
-                        if let plateDictionary = runlistdefinitionn.valueForKey("Plate") as? NSDictionary
+                        if let plateDictionary = runlistdefinitionn.value(forKey: "Plate") as? NSDictionary
                         {
-                            if let plateName = plateDictionary.valueForKey("PlateName") as? NSString
+                            if let plateName = plateDictionary.value(forKey: "PlateName") as? NSString
                             {
                                  self.plateName = plateName as String;
                                 
@@ -610,20 +613,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                
                                 if plateName == "Stat" && self.StatusOut.text == "Acquiring"
                                 {
-                                    dispatch_sync(dispatch_get_main_queue()) {
+                                    DispatchQueue.main.sync {
 
-                                        self.StatTubeView.hidden = false
-                                        self.CurrentWellOut.hidden = true
+                                        self.StatTubeView.isHidden = false
+                                        self.CurrentWellOut.isHidden = true
                                     }
                                 }
                                 else
                                 {
-                                    dispatch_sync(dispatch_get_main_queue()) {
-                                    self.StatTubeView.hidden = true;
-                                    self.CurrentWellOut.hidden = false
+                                    DispatchQueue.main.sync {
+                                    self.StatTubeView.isHidden = true;
+                                    self.CurrentWellOut.isHidden = false
                                     }
                                 }
-                                self.Plate.removeAll(keepCapacity: false)
+                                self.Plate.removeAll(keepingCapacity: false)
                                 for i in 0 ..< self.rows
                                 {
                                     for j in 0 ..< self.Colum
@@ -639,7 +642,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 }}
             catch
             {}
-            }
+            }) 
         task.resume()
     }
 
@@ -653,16 +656,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         }
         
         let url = httpAPIPath + AvailableProcessIds.RunList
-        let requestUrl = NSURL(string: url)
-        let request = NSMutableURLRequest(URL:requestUrl!);
-        request.HTTPMethod = "GET";
+        let requestUrl = URL(string: url)
+        var request = URLRequest(url:requestUrl!);
+        request.httpMethod = "GET";
         
         // Compose a query string
         let postString = "";
         
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding);
+        request.httpBody = postString.data(using: String.Encoding.utf8);
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {
             data, response, error in
 
             do
@@ -679,21 +682,21 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 self.ConnectionIssue = false
             }
             
-            self.Plate.removeAll(keepCapacity: false)
+            self.Plate.removeAll(keepingCapacity: false)
             
 
-            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+            let rawJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
             
             let json = JSON(rawJSON!)
             
             if let details = json["Status"]["Details"].string{
                 
-                let rawJSONData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)!
+                let rawJSONData: Data = details.data(using: String.Encoding.utf8)!
                 
-                if let jsonResponseDictionary = try NSJSONSerialization.JSONObjectWithData(rawJSONData, options: .MutableLeaves) as? NSDictionary
+                if let jsonResponseDictionary = try JSONSerialization.jsonObject(with: rawJSONData, options: .mutableLeaves) as? NSDictionary
                 {
 
-                self.Plate.removeAll(keepCapacity: false)
+                self.Plate.removeAll(keepingCapacity: false)
                     
                 for i in 0 ..< self.rows
                 {
@@ -704,26 +707,27 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                     }
                 }
                 
-                if let runstatusDictionary = jsonResponseDictionary.valueForKey("RunStatuses") as? NSDictionary
+                if let runstatusDictionary = jsonResponseDictionary.value(forKey: "RunStatuses") as? NSDictionary
                 {
                     for stepID in runstatusDictionary
                     {
-                    if let stepIDkey = runstatusDictionary.valueForKey(stepID.key as! String) as? NSDictionary
+                    if let stepIDkey = runstatusDictionary.value(forKey: stepID.key as! String) as? NSDictionary
                     {
-                        if let stepStatuses = stepIDkey.valueForKey("StepStatuses") as? NSDictionary
+                        if let stepStatuses = stepIDkey.value(forKey: "StepStatuses") as? NSDictionary
                         {
                             for steps in stepStatuses
                             {
-                                let wellstatus =  (steps.value as? NSDictionary)?.valueForKey("SampleStatus") as! Int
-                                let hitTest = (steps.value as? NSDictionary)?.valueForKey("HitTestValue") as! Double
-                                  let sampleName = (steps.value as? NSDictionary)?.valueForKey("Name") as! String
+                                let wellstatus =  (steps.value as? NSDictionary)?.value(forKey: "SampleStatus") as! Int
+                                //let hitTest = (steps.value as? NSDictionary)?.valueForKey("HitTestValue") as! Double
+                                  let sampleName = (steps.value as? NSDictionary)?.value(forKey: "Name") as! String
                                 
                                 for item in self.Plate
                                 {
                                     if item.Lable == steps.key as! String
                                     {
                                         item.Status = wellstatus
-                                        item.HitTest = hitTest
+                                      //  item.HitTest = hitTest
+                                        //Push another beta
                                         item.Name = sampleName
                                     }
                                 }
@@ -733,41 +737,41 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                     }
                     }
                 }
-                    dispatch_sync(dispatch_get_main_queue()) {
+                    DispatchQueue.main.sync {
                         
                         self.SamplePlateUICollection.reloadData()
                     }
 
-                    if let percentDone = jsonResponseDictionary.valueForKey("PercentComplete") as? Double
+                    if let percentDone = jsonResponseDictionary.value(forKey: "PercentComplete") as? Double
                     {
                         
                         let percentScaled = NSString(format: "%.0f", percentDone * 100)
                         let percent = "%"
                         
-                        dispatch_sync(dispatch_get_main_queue()) {
+                        DispatchQueue.main.sync {
                             
                             self.PercentDone.text = "\(percentScaled)\(percent)"
                         }
                     }
                     else{
-                        dispatch_sync(dispatch_get_main_queue()) {
+                        DispatchQueue.main.sync {
                             
                             self.PercentDone.text = ""
                         }
                     }
                     
-                    if let timeLeft = jsonResponseDictionary.valueForKey("TimeElapsed") as? NSString
+                    if let timeLeft = jsonResponseDictionary.value(forKey: "TimeElapsed") as? NSString
                     {
-                        let formatter = NSDateFormatter()
-                        formatter.locale = NSLocale(localeIdentifier: "en_US")
+                        let formatter = DateFormatter()
+                        formatter.locale = Locale(identifier: "en_US")
                         formatter.dateFormat = "HH:mm:ss.SS"
                         let etaString = timeLeft as String
-                        if let generatedDate = formatter.dateFromString(etaString)
+                        if let generatedDate = formatter.date(from: etaString)
                         {
                             formatter.dateFormat = "HH:mm:ss"
-                            let  formatedTime = formatter.stringFromDate(generatedDate)
+                            let  formatedTime = formatter.string(from: generatedDate)
 
-                            dispatch_sync(dispatch_get_main_queue()) {
+                            DispatchQueue.main.sync {
                                 
                                 self.TimeLeft.text = formatedTime
                             }
@@ -775,44 +779,44 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                     }
                     else
                     {
-                        dispatch_sync(dispatch_get_main_queue()) {
+                        DispatchQueue.main.sync {
                             
                             self.TimeLeft.text = ""
                         }
                     }
  
-                    if let timeLeft = jsonResponseDictionary.valueForKey("TimeRemaining") as? NSString
+                    if let timeLeft = jsonResponseDictionary.value(forKey: "TimeRemaining") as? NSString
                     {
-                        let formatter = NSDateFormatter()
-                        formatter.locale = NSLocale(localeIdentifier: "en_US")
+                        let formatter = DateFormatter()
+                        formatter.locale = Locale(identifier: "en_US")
                         formatter.dateFormat = "HH:mm:ss.SS"
                         let etaString = timeLeft as String
-                        if let generatedDate = formatter.dateFromString(etaString)
+                        if let generatedDate = formatter.date(from: etaString)
                         {
 
                             formatter.dateFormat = "HH:mm:ss"
-                            let  hourminsec = formatter.stringFromDate(generatedDate)
+                            let  hourminsec = formatter.string(from: generatedDate)
                             
                             formatter.dateFormat = "mm"
-                            let  min = formatter.stringFromDate(generatedDate)
+                            let  min = formatter.string(from: generatedDate)
                             
-                            dispatch_sync(dispatch_get_main_queue()) {
+                            DispatchQueue.main.sync {
                                 
                                 self.TimeRemaining.text = hourminsec
                             }
                             
                             let thingtogo = (min as NSString).doubleValue
                             
-                            let date = NSDate()
+                            let date = Date()
                    
-                            let formatters = NSDateFormatter()
-                            formatters.locale = NSLocale(localeIdentifier: "en_US")
+                            let formatters = DateFormatter()
+                            formatters.locale = Locale(identifier: "en_US")
                             formatters.dateFormat = "HH:mm a"
    
-                            let time =  date.dateByAddingTimeInterval(thingtogo * 60.0)
-                            let  formatedTime = formatters.stringFromDate(time)
+                            let time =  date.addingTimeInterval(thingtogo * 60.0)
+                            let  formatedTime = formatters.string(from: time)
                             
-                      dispatch_sync(dispatch_get_main_queue()) {
+                      DispatchQueue.main.sync {
                                 
                                 self.timeOfDayDoneOut.text = formatedTime
                             }
@@ -820,31 +824,33 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                     }
                     else
                     {
-                        dispatch_sync(dispatch_get_main_queue()) {
+                        DispatchQueue.main.sync {
                             
                             self.TimeRemaining.text = ""
                         }
                     }
                     
                     
-                    if let runs = jsonResponseDictionary.valueForKey("Runs") as? NSArray {
+                    if let runs = jsonResponseDictionary.value(forKey: "Runs") as? NSArray {
                         
                         for runItem in runs
                         {
-                            if let steps = runItem.valueForKey("Steps") as? NSArray
+                            if let steps = (runItem as! Dictionary<String, AnyObject>)["Steps"] as? NSArray
                             {
                                 var sampleName = ""
                                 
-                                for well in steps
+                                for well  in steps
                                 {
-                                    let lab = well["WellId"]! as! String
                                     
-                                    if let name = well["SampleName"]! as? String
+                                    var wellTemp = well  as! Dictionary<String, AnyObject>
+                                    let lab = wellTemp["WellId"]! as! String
+                                    
+                                    if let name = wellTemp["SampleName"]! as? String
                                     {
                                         sampleName = name
                                     }
 
-                                    let status = well["SampleStatus"] as! Int
+                                    let status = wellTemp["SampleStatus"] as! Int
                                     
                                     for item in self.Plate
                                     {
@@ -862,19 +868,19 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         self.index = 0.0
                         if self.Plate.count < 40
                         {
-                            dispatch_sync(dispatch_get_main_queue()) {
-                                 self.SamplePlateUICollection.hidden = true
-                                 self.PercentDone.hidden = true
+                            DispatchQueue.main.sync {
+                                 self.SamplePlateUICollection.isHidden = true
+                                 self.PercentDone.isHidden = true
                             }
                         }
                         else
                         {
-                            dispatch_sync(dispatch_get_main_queue()) {
-                                  self.SamplePlateUICollection.hidden = false
-                                 self.PercentDone.hidden = false
+                            DispatchQueue.main.sync {
+                                  self.SamplePlateUICollection.isHidden = false
+                                 self.PercentDone.isHidden = false
                                 
                             }
-                            dispatch_sync(dispatch_get_main_queue()) {
+                            DispatchQueue.main.sync {
                                 self.SamplePlateUICollection.reloadData()
                             }
                         }
@@ -884,94 +890,94 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             }
             catch
             {}
-        }
+        }) 
         task.resume()
     }
     
     
-    @IBAction func StartUp(sender: AnyObject) {
+    @IBAction func StartUp(_ sender: AnyObject) {
         
-        StartUpButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        StartUpButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
             initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.StartUpButton.transform = CGAffineTransformIdentity
+                self.StartUpButton.transform = CGAffineTransform.identity
             }, completion: nil)
         
-        let alert = UIAlertController(title: "Start", message: "Are you sure you want to start your Yeti?", preferredStyle: UIAlertControllerStyle.Alert)
-        self.presentViewController(alert, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Start", message: "Are you sure you want to start your Yeti?", preferredStyle: UIAlertControllerStyle.alert)
+        self.present(alert, animated: true, completion: nil)
         
-        alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { action in
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
             switch action.style{
-            case .Default:
+            case .default:
                 self.EVONetworkCommunicationController.ProcessStartOptions(self.AvailableProcessIds.Startup,options: "")
                 
-            case .Cancel:
+            case .cancel:
                 print("cancel")
                 
-            case .Destructive:
+            case .destructive:
                 print("destructive")
             }
         }))
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default,handler: nil))
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default,handler: nil))
         
     }
     
-    @IBAction func ShutDown(sender: AnyObject) {
+    @IBAction func ShutDown(_ sender: AnyObject) {
         
-        ShutDownButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        ShutDownButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
             initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.ShutDownButton.transform = CGAffineTransformIdentity
+                self.ShutDownButton.transform = CGAffineTransform.identity
             }, completion: nil)
         
-        let alert = UIAlertController(title: "Shut Down", message: "Are you sure you want to shut down your Yeti?", preferredStyle: UIAlertControllerStyle.Alert)
-        self.presentViewController(alert, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Shut Down", message: "Are you sure you want to shut down your Yeti?", preferredStyle: UIAlertControllerStyle.alert)
+        self.present(alert, animated: true, completion: nil)
         
-        alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { action in
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
             switch action.style{
-            case .Default:
+            case .default:
                 self.EVONetworkCommunicationController.ProcessStartOptions("Li-77xK4DESzHSLzwIMCGQ",options: "")
                 
-            case .Cancel:
+            case .cancel:
                 print("cancel")
                 
-            case .Destructive:
+            case .destructive:
                 print("destructive")
             }
         }))
         
-        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default,handler: nil))
+        alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.default,handler: nil))
     }
     
     
     func setVal()
     {
-        dispatch_sync(dispatch_get_main_queue(), {
+        DispatchQueue.main.sync(execute: {
             self.dataout1.text = self.HTTPErrorText
         })
     }
     
     
-    @IBAction func LightButtonAction(sender: AnyObject) {
-        LightButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+    @IBAction func LightButtonAction(_ sender: AnyObject) {
+        LightButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
                                    delay: 0,
                                    usingSpringWithDamping: 0.2,
                                    initialSpringVelocity: 6.0,
-                                   options: UIViewAnimationOptions.AllowUserInteraction,
+                                   options: UIViewAnimationOptions.allowUserInteraction,
                                    animations: {
-                                    self.LightButton.transform = CGAffineTransformIdentity
+                                    self.LightButton.transform = CGAffineTransform.identity
             }, completion: nil)
         
         EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.LoaderLightToggle, options: "")
@@ -979,17 +985,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
 
     
     
-    @IBAction func RunQCAPICall(sender: AnyObject) {
+    @IBAction func RunQCAPICall(_ sender: AnyObject) {
         
-        QCButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        QCButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
             delay: 0,
             usingSpringWithDamping: 0.2,
                        initialSpringVelocity: 6.0,
-            options: UIViewAnimationOptions.AllowUserInteraction,
+            options: UIViewAnimationOptions.allowUserInteraction,
             animations: {
-                self.QCButton.transform = CGAffineTransformIdentity
+                self.QCButton.transform = CGAffineTransform.identity
             }, completion: nil)
         
        EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.PmtQC, options: "")
@@ -1001,17 +1007,17 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
         
         let urlToMod = httpAPIPath + AvailableProcessIds.SystemStatus
         
-        let myUrl = NSURL(string: urlToMod);
+        let myUrl = URL(string: urlToMod);
         
-        let request = NSMutableURLRequest(URL:myUrl!);
-        request.HTTPMethod = "GET";
+        var request = URLRequest(url:myUrl!);
+        request.httpMethod = "GET";
         
         // Compose a query string
         let postString = "";
         
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding);
+        request.httpBody = postString.data(using: String.Encoding.utf8);
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {
             data, response, error in
             
             do
@@ -1023,24 +1029,24 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 return
             }
             
-            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+            let rawJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
             let json = JSON(rawJSON!)
 
             if let details = json["Status"]["Details"].string{
 
-                if let detailsData: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
+                if let detailsData: Data = details.data(using: String.Encoding.utf8)
                 {
-                    if let statusDictionary = try NSJSONSerialization.JSONObjectWithData(detailsData, options: []) as? NSDictionary
+                    if let statusDictionary = try JSONSerialization.jsonObject(with: detailsData, options: []) as? NSDictionary
                     {
-                        if  let Name  = statusDictionary.valueForKey("InstrumentName") as? String
+                        if  let Name  = statusDictionary.value(forKey: "InstrumentName") as? String
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 
                                 self.NameOut.text = Name
                             }
                         }
                         
-                        if let Status =  statusDictionary.valueForKey("SystemStatus") as? Int
+                        if let Status =  statusDictionary.value(forKey: "SystemStatus") as? Int
                         {
                             
                             var displayStatusText = ""
@@ -1048,7 +1054,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             if Status == 0
                             {
                                 displayStatusText = "Unknown"
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.stopAnimating()
                                 }
@@ -1056,7 +1062,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             else if Status == 2
                             {
                                 displayStatusText = "Off"
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.stopAnimating()
                                 }
@@ -1064,7 +1070,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             else if Status == 3
                             {
                                 displayStatusText = "Starting Up"
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.startAnimating()
                                 }
@@ -1072,7 +1078,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             else if Status == 4
                             {
                                 displayStatusText = "Calibrating"
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.startAnimating()
                                 }
@@ -1086,23 +1092,23 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             else if Status == 6
                             {
                                 displayStatusText = "Ready"
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.stopAnimating()
-                                    self.SamplePlateUICollection.hidden = true
+                                    self.SamplePlateUICollection.isHidden = true
                                     self.PercentDone.text = ""
                                     self.TimeRemaining.text = ""
                                     self.TimeLeft.text = ""
-                                    self.TimeViewButton.hidden = true
-                                    self.CurrentWellOut.hidden = true
-                                    self.SampleNameOut.hidden = true
+                                    self.TimeViewButton.isHidden = true
+                                    self.CurrentWellOut.isHidden = true
+                                    self.SampleNameOut.isHidden = true
                                     self.SampleNameOut.text = ""
                                     self.CurrentWellOut.text = ""
-                                    self.labelTotal.hidden = true
-                                    self.labelRemaning.hidden = true
-                                    self.timeOfDayDoneOut.hidden = true
-                                    self.labelTimeofDay.hidden = true
-                                    self.StatTubeView.hidden = true
+                                    self.labelTotal.isHidden = true
+                                    self.labelRemaning.isHidden = true
+                                    self.timeOfDayDoneOut.isHidden = true
+                                    self.labelTimeofDay.isHidden = true
+                                    self.StatTubeView.isHidden = true
                                     self.newRunlistRequired = true
                                     
                                                                     }
@@ -1110,28 +1116,28 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             else if Status == 7
                             {
                                 displayStatusText = "Acquiring"
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.startAnimating()
-                                    self.PlateView.hidden = false
-                                    self.StartUpButton.hidden = true;
-                                    self.ShutDownButton.hidden = true;
+                                    self.PlateView.isHidden = false
+                                    self.StartUpButton.isHidden = true;
+                                    self.ShutDownButton.isHidden = true;
                                     //self.QCButton.hidden = true
-                                    self.TimeViewButton.hidden = false
+                                    self.TimeViewButton.isHidden = false
                                   
                                    if self.plateName != "Stat"
                                    {
-                                    self.CurrentWellOut.hidden = false
+                                    self.CurrentWellOut.isHidden = false
                                     }
                                     
-                                    self.SampleNameOut.hidden = false
-                                    self.SamplePlateUICollection.hidden = false
+                                    self.SampleNameOut.isHidden = false
+                                    self.SamplePlateUICollection.isHidden = false
                                 }
                             }
                             else if Status == 8
                             {
                                 displayStatusText = "Shutting Down..."
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.startAnimating()
                                 }
@@ -1139,13 +1145,13 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             else if Status == 9
                             {
                                 displayStatusText = "Error"
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.ActivityInd.stopAnimating()
                                 }
                             }
                             
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 self.StatusOut.text = displayStatusText
                                 
                             }
@@ -1155,34 +1161,34 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         {
                         }
                         
-                        if let isTempOn  = statusDictionary.valueForKey("IsTemperatureControlEnabled") as? Bool
+                        if let isTempOn  = statusDictionary.value(forKey: "IsTemperatureControlEnabled") as? Bool
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 self.isTempOn = isTempOn
                                 
                             }
                         }
-                        if let targetTemp  = statusDictionary.valueForKey("TemperatureTarget_C") as? Double
+                        if let targetTemp  = statusDictionary.value(forKey: "TemperatureTarget_C") as? Double
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 if targetTemp > 15
                                     
                                 {
-                                    self.FireImage.hidden = false
-                                    self.coolImage.hidden = true
+                                    self.FireImage.isHidden = false
+                                    self.coolImage.isHidden = true
                                 }
                                 else
                                 {
-                                    self.FireImage.hidden = true
-                                    self.coolImage.hidden = false
+                                    self.FireImage.isHidden = true
+                                    self.coolImage.isHidden = false
                                 }
                                 self.TempTarget.text = String(stringInterpolationSegment: targetTemp)
                             }
                         }
                         
-                        if  let tempReal  = statusDictionary.valueForKey("TemperatureCurrent_C") as? Double
+                        if  let tempReal  = statusDictionary.value(forKey: "TemperatureCurrent_C") as? Double
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 let formatedTemp =  NSString(format: "%.0f", tempReal)
                                 let c = "°C"
                                 
@@ -1190,7 +1196,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                             }
                         }
                         
-                        if let currentQuickActions = statusDictionary.valueForKey("QuickActionProcessIds") as? [String]
+                        if let currentQuickActions = statusDictionary.value(forKey: "QuickActionProcessIds") as? [String]
                         {
                             
                             for quickActionItem in currentQuickActions
@@ -1199,44 +1205,44 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                 //StartUp
                                 if quickActionItem == self.AvailableProcessIds.Startup
                                 {
-                                    dispatch_async(dispatch_get_main_queue()) {
-                                        self.StartUpButton.hidden = false;
-                                        self.ShutDownButton.hidden = true;
+                                    DispatchQueue.main.async {
+                                        self.StartUpButton.isHidden = false;
+                                        self.ShutDownButton.isHidden = true;
                                     }
                                 }
                                 
                                 //Shutdown
                                 if quickActionItem ==  self.AvailableProcessIds.Shutdown
                                 {
-                                    dispatch_async(dispatch_get_main_queue()) {
-                                        self.StartUpButton.hidden = true;
-                                        self.ShutDownButton.hidden = false;
+                                    DispatchQueue.main.async {
+                                        self.StartUpButton.isHidden = true;
+                                        self.ShutDownButton.isHidden = false;
                                     }
                                 }
                             }
                             
                         }
 
-                        if let usersArray = statusDictionary.valueForKey("Users") as? NSArray
+                        if let usersArray = statusDictionary.value(forKey: "Users") as? NSArray
                         {
                             let users = usersArray[0] as! String
                             
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 
                                 self.Users.text = users
                             }
                         }
                         
-                        if let firmwareVersion = statusDictionary.valueForKey("FirmwareVersion") as? NSString
+                        if let firmwareVersion = statusDictionary.value(forKey: "FirmwareVersion") as? NSString
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 self.FirmOut.text = firmwareVersion as String
                             }
                         }
                         
-                        if let softwareVersion = statusDictionary.valueForKey("SoftwareVersion") as? NSString
+                        if let softwareVersion = statusDictionary.value(forKey: "SoftwareVersion") as? NSString
                         {
-                            dispatch_async(dispatch_get_main_queue()) {
+                            DispatchQueue.main.async {
                                 self.SoftwareVout.text = softwareVersion as String
                                 
                             }
@@ -1247,20 +1253,20 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 }
                 catch
                 {}
-        }
+        }) 
         task.resume()
     }
-    @IBAction func DoorAction(sender: AnyObject) {
+    @IBAction func DoorAction(_ sender: AnyObject) {
         
-        DoorButton.transform = CGAffineTransformMakeScale(0.01, 0.01)
+        DoorButton.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         
-        UIView.animateWithDuration(2.0,
+        UIView.animate(withDuration: 2.0,
                                    delay: 0,
                                    usingSpringWithDamping: 0.2,
                                    initialSpringVelocity: 6.0,
-                                   options: UIViewAnimationOptions.AllowUserInteraction,
+                                   options: UIViewAnimationOptions.allowUserInteraction,
                                    animations: {
-                                    self.DoorButton.transform = CGAffineTransformIdentity
+                                    self.DoorButton.transform = CGAffineTransform.identity
             }, completion: nil)
 
         EVONetworkCommunicationController.ProcessStartOptions(AvailableProcessIds.LoaderDoorToggle, options: "")
@@ -1269,16 +1275,16 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
     func FluidStatusAPICall()
     {
         let url = httpAPIPath + AvailableProcessIds.BulkFluids
-        let requestUrl = NSURL(string: url);
-        let request = NSMutableURLRequest(URL:requestUrl!);
-        request.HTTPMethod = "GET";
+        let requestUrl = URL(string: url);
+        var request = URLRequest(url:requestUrl!);
+        request.httpMethod = "GET";
         
         // Compose a query string
         let postString = "";
         
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding);
+        request.httpBody = postString.data(using: String.Encoding.utf8);
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {
             data, response, error in
             
             do
@@ -1290,28 +1296,28 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                 return
             }
              
-            let rawJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableLeaves) as? NSDictionary
+            let rawJSON = try JSONSerialization.jsonObject(with: data!, options: .mutableLeaves) as? NSDictionary
            
             let json = JSON(rawJSON!)
             
             if let details = json["Status"]["Details"].string{
                 
-                if let statusDetails: NSData = details.dataUsingEncoding(NSUTF8StringEncoding)
+                if let statusDetails: Data = details.data(using: String.Encoding.utf8)
                 {
-                    if let detailsDictionary = try NSJSONSerialization.JSONObjectWithData(statusDetails, options: []) as? NSDictionary
+                    if let detailsDictionary = try JSONSerialization.jsonObject(with: statusDetails, options: []) as? NSDictionary
                     {
                         var d1: Float = 0.0;
                         var d2: Float = 0.0;
                         
-                        if let DI_1 = detailsDictionary.valueForKey("DIARatio") as? Float
+                        if let DI_1 = detailsDictionary.value(forKey: "DIARatio") as? Float
                         {
                             d1 = DI_1
                         }
-                        if  let DI_2 = detailsDictionary.valueForKey("DIBRatio") as? Float
+                        if  let DI_2 = detailsDictionary.value(forKey: "DIBRatio") as? Float
                         {
                             d2 = DI_2
                         }
-                        if let timeLeft = detailsDictionary.valueForKey("TimeRemainingSeconds") as? Double
+                        if let timeLeft = detailsDictionary.value(forKey: "TimeRemainingSeconds") as? Double
                         {
                             
                             let timeLeft4 = timeLeft / 60.0
@@ -1321,14 +1327,14 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                                 
                                 let timeHours = timeLeft4 / 60.0
                                 
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.FluidLevel.text =   String(format:"%.f", timeHours) + "h"
                                 }
                             }
                             else
                             {
-                                dispatch_async(dispatch_get_main_queue()) {
+                                DispatchQueue.main.async {
                                     
                                     self.FluidLevel.text =   String(format:"%.f", timeLeft4) + "min"
                                 }
@@ -1336,7 +1342,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
                         }
                        
                         let realDI = (d1 + d2) / 2.0
-                        dispatch_async(dispatch_get_main_queue()) {
+                        DispatchQueue.main.async {
                             self.DI1.setProgress( realDI, animated: true)
                         }
                     }
@@ -1346,26 +1352,26 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             }
             catch
             {}
-        }
+        }) 
         task.resume()
     }
     
 
     
-    func ProcessStatusAPICall( proccessID:String )
+    func ProcessStatusAPICall( _ proccessID:String )
     {
         let url = httpAPIPath + proccessID
-        let requestUrl = NSURL(string: url);
+        let requestUrl = URL(string: url);
         
-        let request = NSMutableURLRequest(URL:requestUrl!);
-        request.HTTPMethod = "GET";
+        var request = URLRequest(url:requestUrl!);
+        request.httpMethod = "GET";
         
         // Compose a query string
         let postString = "";
         
-        request.HTTPBody = postString.dataUsingEncoding(NSUTF8StringEncoding);
+        request.httpBody = postString.data(using: String.Encoding.utf8);
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {
             data, response, error in
             
             do
@@ -1378,7 +1384,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UICollectionViewDat
             }
                 
             }
-        }
+        }) 
         task.resume()
     }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class PlateItemModel:Serializable{
+open class PlateItemModel{
     
     var Lable:String = ""
     var Name:String = ""

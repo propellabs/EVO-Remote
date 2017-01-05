@@ -9,7 +9,7 @@
 import Foundation
 
 
-public class NetworkCommunicationController
+open class NetworkCommunicationController
 {
 
     var IP = "";
@@ -23,25 +23,36 @@ public class NetworkCommunicationController
    
     
     
-    func ProcessStartOptions(processId:String, options:String )
+    func ProcessStartOptions(_ processId:String, options:String )
     {
         let urlToMod = "http://" + IP + ":9001/api/processstart/"
         
-        let myUrl = NSURL(string: urlToMod);
+        let myUrl = URL(string: urlToMod);
         
-        let request = NSMutableURLRequest(URL:myUrl!);
-        request.HTTPMethod = "POST";
+        var request = URLRequest(url:myUrl!);
+        request.httpMethod = "POST";
         
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        //This Will set the message
         
         
         let thingTosay = ProcessArg(ProcessId: processId, Options: options)
         
-        let postString = thingTosay.toJsonString()
         
-        request.HTTPBody = postString!.dataUsingEncoding(NSUTF8StringEncoding);
+        let para:NSMutableDictionary = NSMutableDictionary()
+        para.setValue(thingTosay.ProcessId, forKey: "ProcessId")
+        para.setValue(thingTosay.Options, forKey: "Options")
+    
+        let jsonData = try! JSONSerialization.data(withJSONObject: para, options: [])
+        let postString = NSString(data: jsonData, encoding: String.Encoding.utf8.rawValue) as! String
+       // print(jsonString)
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
+        
+        //let postString = thingTosay.toJsonString()
+        
+        request.httpBody = postString.data(using: String.Encoding.utf8);
+        
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {
             data, response, error in
             
             do
@@ -55,7 +66,7 @@ public class NetworkCommunicationController
                     return
                 }
                 
-                let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                let responseString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
                 print("responseString = \(responseString)")
                 
                 //            var err: NSError?
@@ -63,7 +74,7 @@ public class NetworkCommunicationController
             }
             //            catch
             //            {}
-        }
+        }) 
         task.resume()
     }
     
@@ -71,29 +82,33 @@ public class NetworkCommunicationController
     
     
     
-    func StopProcess(processID:String)
+    func StopProcess(_ processID:String)
     {
         
         let urlToMod = "http://" + IP + ":9001/api/processstop/"
         
-        let myUrl = NSURL(string: urlToMod);
+        let myUrl = URL(string: urlToMod);
         
-        let request = NSMutableURLRequest(URL:myUrl!);
-        request.HTTPMethod = "POST";
+        var request = URLRequest(url:myUrl!);
+        request.httpMethod = "POST";
         
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
         
         let processArgs = ProcessArg(ProcessId: processID, Options: "")
-        let postString = processArgs.toJsonString()
+       // let postString = processArgs.toJsonString()
         
-        request.HTTPBody = postString!.dataUsingEncoding(NSUTF8StringEncoding);
+        let para:NSMutableDictionary = NSMutableDictionary()
+        para.setValue(processArgs.ProcessId, forKey: "ProcessId")
+        para.setValue(processArgs.Options, forKey: "Options")
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) {
-            
-            
-            
-            
-            data, response, error in
+        let jsonData = try! JSONSerialization.data(withJSONObject: para, options: [])
+        let postString = NSString(data: jsonData, encoding: String.Encoding.utf8.rawValue) as! String
+        
+        
+        request.httpBody = postString.data(using: String.Encoding.utf8);
+
+        
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {  data, response, error in
             do
             {
                 
@@ -104,7 +119,7 @@ public class NetworkCommunicationController
                     return
                 }
                 
-                let responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                let responseString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
                 print("responseString = \(responseString)")
                 
                 //            var err: NSError?
@@ -114,7 +129,7 @@ public class NetworkCommunicationController
             }
             //            catch
             //        {}
-        }
+        }) 
         task.resume()
     }
     
